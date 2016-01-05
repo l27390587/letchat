@@ -54,4 +54,4 @@ function loginCallback(userId){
     $('#login-module').removeClass('active');
 }
 
-loginCallback('4aaf6cb7-35a1-413b-a80e-b45d00f8397c');
+// loginCallback('4aaf6cb7-35a1-413b-a80e-b45d00f8397c');

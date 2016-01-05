@@ -11,7 +11,7 @@ var ThreadItem = React.createClass({
         });
         return (
             <li
-                className={"thread-item" + (this.props.activeClass? ' active':'') }
+                className={"thread-item" + (this.props.activeClass? ' active':'')+ (this.props.flashClass? ' flash':'') }
                 title={this.props.thread.name + '\n' + users.join(', ')}
                 onClick={this.props.itemClick}
                 data-threadid={this.props.thread.id}

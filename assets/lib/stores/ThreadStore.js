@@ -29,16 +29,36 @@ function initThreadData(serverThreads){
 }
 function changeThread(newId){
     curThread = newId;
+    ThreadStore.getById(newId).flash = false;
+}
+function switchThread(msgObj){
+    var newThreads = {},
+        nowTopThread = msgObj.thread;
+    newThreads[nowTopThread] = ThreadStore.getById(nowTopThread);
+    newThreads[nowTopThread].flash = true;
+
+    for(var i in threads){
+        if(nowTopThread == i){
+            continue;
+        }
+        newThreads[i] = threads[i];
+    }
+
+    threads = newThreads;
+    // console.log(newThreads);
+
 }
 
-
-// exports出去的 只有get  没有set 
+// exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
     getAll: function(){
         return threads;
     },
     getCurThread: function(){
         return curThread;
+    },
+    getById: function (id) {
+        return threads[id];
     },
     emitChange: function(){
         this.emit(CHANGE_EVENT);
@@ -67,6 +87,10 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.CHANGE_THREAD:
             // if()  // 检查是否是可用的uuid?
             changeThread( action.newId );
+            ThreadStore.emitChange();
+            break;
+        case ChatConstants.MSG_RECEIVE:
+            switchThread( action.msgObj );
             ThreadStore.emitChange();
             break;
     };

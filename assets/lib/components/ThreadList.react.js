@@ -10,7 +10,7 @@ var ThreadStore = require('../stores/ThreadStore');
 
 var ThreadItem = require('./ThreadItem.react');
 
-// function 
+// function
 
 var ThreadList = React.createClass({
     getInitialState: function() {
@@ -34,6 +34,7 @@ var ThreadList = React.createClass({
                 itemClick={this.switchThread}
                 key={i}
                 activeClass={ curThread == thread.id }
+                flashClass={ thread.flash }
             /> );
         }
         return (

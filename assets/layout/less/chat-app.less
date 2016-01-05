@@ -15,6 +15,19 @@
 
     background-color: #f0f0f0;
 
+    @-webkit-keyframes twinkling{    /*透明度由0到1*/
+       0%{
+          opacity:0; /*透明度为0*/
+        }
+       100%{
+          opacity:1; /*透明度为1*/
+
+       }
+     }
+     .flash{
+         -webkit-animation:twinkling 1s infinite ease-in-out;
+     }
+     
     .thread-item{
         padding: 0.375em 0 0.25em 0.75em;
         line-height: 1.5;
@@ -23,7 +36,7 @@
         font-size: 14px;
         .text-collapse();
         .tst(all 100ms ease-in;);
-        
+
         &:hover{
             background-color: rgba(57, 81, 117, 0.25);
         }
@@ -32,7 +45,7 @@
             background-color: #425E88;
             color: #fff;
         }
-        
+
     }
 }
 
