@@ -27,7 +27,7 @@
      .flash{
          -webkit-animation:twinkling 1s infinite ease-in-out;
      }
-     
+
     .thread-item{
         padding: 0.375em 0 0.25em 0.75em;
         line-height: 1.5;
@@ -39,8 +39,22 @@
 
         &:hover{
             background-color: rgba(57, 81, 117, 0.25);
-        }
 
+            .cancelButton{
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border-radius: 10px;
+                background-color: #949494;
+                color: #fff;
+                padding-left: 5px;
+                margin-right: 5px;
+            }
+        }
+        
+        .cancelButton{
+            display: none;
+        }
         &.active{
             background-color: #425E88;
             color: #fff;

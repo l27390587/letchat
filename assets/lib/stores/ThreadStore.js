@@ -34,21 +34,42 @@ function changeThread(newId){
 function switchThread(msgObj){
     var newThreads = {},
         nowTopThread = msgObj.thread;
-    newThreads[nowTopThread] = ThreadStore.getById(nowTopThread);
-    newThreads[nowTopThread].flash = true;
+    if(threads[nowTopThread]){
+        newThreads[nowTopThread] = ThreadStore.getById(nowTopThread);
+        newThreads[nowTopThread].flash = true;
 
-    for(var i in threads){
-        if(nowTopThread == i){
-            continue;
+        for(var i in threads){
+            if(nowTopThread == i){
+                continue;
+            }
+            newThreads[i] = threads[i];
         }
-        newThreads[i] = threads[i];
+
+        threads = newThreads;
+        ThreadStore.emitChange();
+    }else{
+        $.get('/threadById?thread=' + nowTopThread, function(result) {
+            // console.log(result);
+            newThreads[nowTopThread] = result;
+            newThreads[nowTopThread].flash = true;
+            for(var i in threads){
+                newThreads[i] = threads[i];
+            }
+            threads = newThreads;
+            ThreadStore.emitChange();
+        });
     }
-
-    threads = newThreads;
-    // console.log(newThreads);
-
 }
 
+function cancelThread(tid){
+    ThreadStore.deleteById(tid);
+    for(var i in threads){
+        var newcurThread = i;
+        break;
+    }
+    curThread = newcurThread;
+    ThreadStore.emitChange();
+}
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
     getAll: function(){
@@ -59,6 +80,9 @@ var ThreadStore = merge(EventEmitter.prototype, {
     },
     getById: function (id) {
         return threads[id];
+    },
+    deleteById:function (id) {
+        delete threads[id];
     },
     emitChange: function(){
         this.emit(CHANGE_EVENT);
@@ -80,9 +104,11 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
     switch(actionType){
         case ChatConstants.APP_INIT:
             ChatDispatcher.waitFor([UserStore.dispatchToken]);
-            initThreadData( action.threads );
-            // ~~不触发change, 最后在msgstore中触发~~
-            ThreadStore.emitChange();
+            $.get('/threadInit', function(result) {
+                initThreadData( result );
+                // ~~不触发change, 最后在msgstore中触发~~
+                ThreadStore.emitChange();
+            });
             break;
         case ChatConstants.CHANGE_THREAD:
             // if()  // 检查是否是可用的uuid?
@@ -91,7 +117,9 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
             break;
         case ChatConstants.MSG_RECEIVE:
             switchThread( action.msgObj );
-            ThreadStore.emitChange();
+            break;
+        case ChatConstants.Thread_Cancel:
+            cancelThread( action.id );
             break;
     };
 });

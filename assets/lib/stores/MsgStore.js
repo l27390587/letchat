@@ -59,7 +59,7 @@ var MsgStore = merge(EventEmitter.prototype, {
 // 针对不同的actionType调用不同的函数
 // 最后统一做一次emitChange
 
-// 注册更多的action handler: CRUD 
+// 注册更多的action handler: CRUD
 ChatDispatcher.register(function(payload){
     var action = payload.action;
     var text;
@@ -67,8 +67,11 @@ ChatDispatcher.register(function(payload){
     switch(action.actionType){
         case ChatConstants.APP_INIT:
             ChatDispatcher.waitFor([ThreadStore.dispatchToken]);
-            _dataHandler.init(action.msgs);
-            MsgStore.emitChange();
+            $.get('/msgInit', function(result) {
+                // console.log(result.length);
+                _dataHandler.init(result);
+                MsgStore.emitChange();
+            });
             break;
         case ChatConstants.MSG_CREATE:
             msgObj = action.msgObj;

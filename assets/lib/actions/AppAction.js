@@ -43,6 +43,13 @@ var AppAction = {
             }
         })
     },
+    cancelThread : function(tid){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.Thread_Cancel,
+            id: tid
+        })
+    },
+    
     receiveMsg: function(msgObj){
         ChatDispatcher.handlerServerAction({
             actionType: ChatlConstants.MSG_RECEIVE,

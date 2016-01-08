@@ -16,6 +16,7 @@ var ThreadItem = React.createClass({
                 onClick={this.props.itemClick}
                 data-threadid={this.props.thread.id}
             >
+                <span className="cancelButton" title="删除">X</span>
                 {this.props.thread.name}
             </li>
         );

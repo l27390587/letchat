@@ -50,9 +50,21 @@ var ThreadList = React.createClass({
     },
     switchThread: function(e){
         var item = e.target;
-        var threadId = item.dataset['threadid'];
+        var threadId ;
         // console.log(threadId);
-        AppAction.changeThread( threadId );
+        if(item.nodeName == 'LI' ){
+            threadId = item.dataset['threadid'];
+            AppAction.changeThread( threadId );
+        }else if (item.className == 'cancelButton') {
+            threadId = item.parentNode.dataset['threadid'];
+            // console.log(threadId);
+            // ThreadStore.deleteById(threadId);
+            // ThreadStore.emitChange();
+            AppAction.cancelThread( threadId );
+        }else{
+            threadId = item.parentNode.dataset['threadid'];
+            AppAction.changeThread( threadId );
+        }
     }
 
 });

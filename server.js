@@ -17,11 +17,33 @@ var server = http.Server(app);
 
 app.set('view engine', 'jade');
 
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use( express.static(__dirname + "/assets") );
 
-
+var msg = require('./backend/msg.js');
+var thread = require('./backend/thread.js');
+var msg = require('./backend/msg.js');
 // 路由
+app.get('/msgInit', function(req, res){
+    msg.getAll(function(doc){
+        res.json(doc);
+    })
+})
+app.get('/threadInit', function(req, res){
+    thread.getAll(function(doc){
+        res.json(doc);
+    })
+})
+app.get('/threadById', function(req, res){
+    // thread.getAll(function(doc){
+    //     res.json(doc);
+    // })
+    // console.log(req.query.thread);
+    var tid = req.query.thread;
+    thread.getById(tid,function(doc){
+        res.json(doc);
+    })
+})
 app.get('/', function(req, res){
     res.render('index', {
         // comHTML: react.renderComponentToString(d())
@@ -39,4 +61,4 @@ server.listen(port, function(){
 
 
 var socketChat = require('./backend/socketChat');
-socketChat(server);
+socketChat(server,msg);

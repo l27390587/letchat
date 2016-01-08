@@ -5,5 +5,6 @@ module.exports = keyMirror({
     USER_LOGIN: null,
     CHANGE_THREAD: null,
     MSG_CREATE: null,
-    MSG_RECEIVE: null
+    MSG_RECEIVE: null,
+    Thread_Cancel: null
 });
