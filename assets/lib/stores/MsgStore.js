@@ -74,7 +74,7 @@ ChatDispatcher.register(function(payload){
             });
             break;
         case ChatConstants.MSG_CREATE:
-            msgObj = action.msgObj;
+            var msgObj = action.msgObj;
             if( msgObj.text.trim() !== '' ){
                 _dataHandler.create( msgObj );
                 MsgStore.emitChange();

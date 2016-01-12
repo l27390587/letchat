@@ -1,5 +1,5 @@
 /**
- * @jsx React.DOM
+ *
  */
 
 /*
@@ -114,6 +114,7 @@ var ChatApp = React.createClass({
         var curThread = ThreadStore.getCurThread();
         // var curUser = '4aaf6cb7-35a1-413b-a80e-b45d00f8397c';
         var curUser = UserStore.getCurUser();
+        // console.log(text);
         AppAction.createMsg(text, newMsgId, curThread, curUser);
     }
 });

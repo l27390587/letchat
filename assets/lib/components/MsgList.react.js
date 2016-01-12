@@ -1,33 +1,30 @@
 /**
- * @jsx React.DOM
+ *
  */
 
 
 /*
  * 渲染消息/对话列表
- * 
- * 
+ *
+ *
  */
 var React = require('react');
+
+var AppAction = require('../actions/AppAction');
 
 var UserStore = require('../stores/UserStore');
 var MsgStore = require('../stores/MsgStore');
 var ThreadStore = require('../stores/ThreadStore');
 
-var Tool = require('../util/tool');
+// var Tool = require('../util/tool');
+// var Modal = require('rctui/Modal');
+// var Modal = ReactUI.Modal;
 
-
-// 临时存储的thread, 这个优化有没有必要呢... 
+// 临时存储的thread, 这个优化有没有必要呢...
 var oldCurThread = null;
 
 function getAllMsg(){
     var newCurThreadId = ThreadStore.getCurThread();
-    // if( newCurThreadId != oldCurThread ){
-    //     oldCurThread = newCurThreadId;
-    // }
-    // else{
-    //     return false;
-    // }
     return {
         msgData: MsgStore.getByThreadId( newCurThreadId )
     };
@@ -60,10 +57,10 @@ var MsgList = React.createClass({
             if( UserStore.isCurUser(msg.user.id) ){
                 classNameArr.push('sendbyme');
             }
-            
+
             var node = (
-                <li className={classNameArr.join(' ')} key={i}>
-                    <img className="msg-user-avatar" src={msg.user.avatar} />
+                <li className={classNameArr.join(' ')} key={i} data-userid={msg.user.id} >
+                    <img className="msg-user-avatar" src={msg.user.avatar} onClick = {this.showUser} />
                     <div className="msg-content-ctn">
                         <p className="msg-user-name">{msg.user.alias}</p>
                         <p className="msg-text">{msg.text}</p>
@@ -90,6 +87,34 @@ var MsgList = React.createClass({
             this._ele.scrollTop = newHeight;
             this._lastHeight = newHeight;
         }
+    },
+    showUser: function (e) {
+        var uId = e.target.parentNode.dataset['userid'];
+        AppAction.userWatch( uId );
+        // Modal.open({
+        //     header: '一个弹出表单',
+        //     content: (
+        //         <div>
+        //
+        //         </div>
+        //     ),
+        //     width: 700,
+        //     buttons: {
+        //         '取消': true,
+        //         '重置': () => {
+        //             let form = this.refs.form
+        //             form.setData({})
+        //         },
+        //         '确定': () => {
+        //             let form = this.refs.form
+        //             let suc = form.validate()
+        //             if (suc) {
+        //                 alert(JSON.stringify(form.getValue()))
+        //                 return true
+        //             }
+        //         }
+        //     }
+        // })
     }
 });
 

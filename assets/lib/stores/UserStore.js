@@ -29,7 +29,22 @@ function initUserData(serverUsers){
 function setCurUser(userId){
     currentUser = userId;
 }
-
+function watchUser(userId){
+    if(UserData[userId]){
+        console.log("yes!" + userId);
+    }else {
+        $.get('/userById?user=' + userId, function(result) {
+            console.log(result);
+            // newThreads[nowTopThread] = result;
+            // newThreads[nowTopThread].flash = true;
+            // for(var i in threads){
+            //     newThreads[i] = threads[i];
+            // }
+            // threads = newThreads;
+            // ThreadStore.emitChange();
+        });
+    }
+}
 var UserStore = merge(EventEmitter.prototype, {
     getAll: function(){
         return UserData;
@@ -71,6 +86,10 @@ UserStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.USER_LOGIN:
             setCurUser(action.userId);
             UserStore.emitChange();
+            break;
+        case ChatConstants.USER_WATCH:
+            watchUser(action.userId);
+            // UserStore.emitChange();
             break;
     };
 });

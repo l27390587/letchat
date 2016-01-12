@@ -118,7 +118,7 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.MSG_RECEIVE:
             switchThread( action.msgObj );
             break;
-        case ChatConstants.Thread_Cancel:
+        case ChatConstants.Thread_CANCEL:
             cancelThread( action.id );
             break;
     };

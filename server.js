@@ -22,6 +22,7 @@ app.use( express.static(__dirname + "/assets") );
 
 var msg = require('./backend/msg.js');
 var thread = require('./backend/thread.js');
+var user = require('./backend/user.js');
 var msg = require('./backend/msg.js');
 // 路由
 app.get('/msgInit', function(req, res){
@@ -35,12 +36,14 @@ app.get('/threadInit', function(req, res){
     })
 })
 app.get('/threadById', function(req, res){
-    // thread.getAll(function(doc){
-    //     res.json(doc);
-    // })
-    // console.log(req.query.thread);
     var tid = req.query.thread;
     thread.getById(tid,function(doc){
+        res.json(doc);
+    })
+})
+app.get('/userById', function(req, res){
+    var uid = req.query.user;
+    user.getById(uid,function(doc){
         res.json(doc);
     })
 })

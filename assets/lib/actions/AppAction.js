@@ -21,6 +21,12 @@ var AppAction = {
         });
     },
 
+    userWatch:function(userId){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.USER_WATCH,
+            userId: userId
+        });
+    },
     // --------------- thread ---------------
     changeThread: function(newId){
         ChatDispatcher.handleViewAction({
@@ -45,11 +51,11 @@ var AppAction = {
     },
     cancelThread : function(tid){
         ChatDispatcher.handleViewAction({
-            actionType: ChatlConstants.Thread_Cancel,
+            actionType: ChatlConstants.Thread_CANCEL,
             id: tid
         })
     },
-    
+
     receiveMsg: function(msgObj){
         ChatDispatcher.handlerServerAction({
             actionType: ChatlConstants.MSG_RECEIVE,

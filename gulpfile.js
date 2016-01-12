@@ -12,6 +12,9 @@ var gbro = require('gulp-browserify');
 var reactify = require('reactify');
 var envify = require('envify');
 
+var webpack = require('webpack')
+var webpackConfig = require('./webpack.config.js')
+var gutil = require("gulp-util");
 
 var rename = require('gulp-rename');
 var less = require('gulp-less');
@@ -39,7 +42,16 @@ if( productTasks.indexOf(taskName) >= 0 ){
     proEnv = true;
 }
 
-
+gulp.task('webpack', function(callback) {
+    // run webpack
+    webpack(webpackConfig, function(err, stats) {
+        if(err) throw new gutil.PluginError("webpack", err);
+        gutil.log("[webpack]", stats.toString({
+            // output options
+        }));
+        callback();
+    });
+});
 
 gulp.task('bundle-gulp-browserify', function(){
     gulp.src('./assets/lib/app.js')
@@ -69,14 +81,14 @@ gulp.task('less', function(){
 });
 
 gulp.task('watch', function(){
-    // gulp-livereload module updated... 
+    // gulp-livereload module updated...
     liveReload.listen();
 
     var file2w = ['./assets/lib/**/*.js', '!./assets/lib/bundle.js'];
-    gulp.watch(file2w, [bundleTask]);
-    
+    gulp.watch(file2w, ['webpack']);
+
     gulp.watch('assets/layout/less/**/*.less', ['less']);
-    
+
     var file2r = ['./views/**/*.jade', './assets/lib/bundle.js', './assets/layout/**/*.css'];
     gulp.watch(file2r, liveReload.changed);
 });
