@@ -15,7 +15,7 @@ var AppAction = require('../actions/AppAction');
 var UserStore = require('../stores/UserStore');
 var MsgStore = require('../stores/MsgStore');
 var ThreadStore = require('../stores/ThreadStore');
-
+// console.log(ThreadStore);
 // var Tool = require('../util/tool');
 // var Modal = require('rctui/Modal');
 // var Modal = ReactUI.Modal;
@@ -50,6 +50,7 @@ var MsgList = React.createClass({
         this._scrollToBottom();
     },
     render: function() {
+        // console.log(this.state.msgData);
         var msgItems = [];
         for(var i in this.state.msgData){
             var msg = this.state.msgData[i];
@@ -91,30 +92,6 @@ var MsgList = React.createClass({
     showUser: function (e) {
         var uId = e.target.parentNode.dataset['userid'];
         AppAction.userWatch( uId );
-        // Modal.open({
-        //     header: '一个弹出表单',
-        //     content: (
-        //         <div>
-        //
-        //         </div>
-        //     ),
-        //     width: 700,
-        //     buttons: {
-        //         '取消': true,
-        //         '重置': () => {
-        //             let form = this.refs.form
-        //             form.setData({})
-        //         },
-        //         '确定': () => {
-        //             let form = this.refs.form
-        //             let suc = form.validate()
-        //             if (suc) {
-        //                 alert(JSON.stringify(form.getValue()))
-        //                 return true
-        //             }
-        //         }
-        //     }
-        // })
     }
 });
 

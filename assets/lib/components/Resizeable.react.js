@@ -39,7 +39,9 @@ var Resizeable = React.createClass({
             onMouseUp={this._mouseUp}
             onMouseMove={this._mouseMove}  >
 
-                {this.props.verLeftNode}
+                {this.props.selfNode}
+                {this.props.verLeftThreadNode}
+                {this.props.verLeftFriendNode}
 
                 <div className="resize-ver"
                 onMouseDown={this._mouseDown}

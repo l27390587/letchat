@@ -41,6 +41,12 @@ app.get('/threadById', function(req, res){
         res.json(doc);
     })
 })
+app.get('/threadByMember', function(req, res){
+    var uid = req.query.user;
+    thread.getByMember(uid,function(doc){
+        res.json(doc);
+    })
+})
 app.get('/userById', function(req, res){
     var uid = req.query.user;
     user.getById(uid,function(doc){

@@ -5,6 +5,11 @@ var merge = require('react/lib/merge');
 var ChatDispatcher = require('../dispatcher/ChatDispatcher');
 var ChatConstants = require('../constants/ChatConstants');
 
+var AppAction = require('../actions/AppAction');
+
+var uuid = require('node-uuid');
+var Modal = require('rctui/Modal');
+
 var CHANGE_EVENT = 'change';
 
 var UserData = {
@@ -30,11 +35,38 @@ function setCurUser(userId){
     currentUser = userId;
 }
 function watchUser(userId){
-    if(UserData[userId]){
-        console.log("yes!" + userId);
+    var nowUser = UserData[userId]
+    if(nowUser){
+        Modal.open({
+            header: '',
+            content: (
+                <div className = 'user-modal'>
+                    <img className="modal-img"  src={nowUser.avatar} />
+                    <p className="modal-name">{nowUser.alias}</p>
+                </div>
+            ),
+            width: 200,
+            buttons: {
+                '发消息': () => {
+                    var newThread = {};
+                    newThread.id = uuid.v4();
+                    newThread.members = [];
+                    newThread.members.push(currentUser);
+                    newThread.members.push(userId);
+                    newThread.c_time = Date.now();
+                    newThread.name = nowUser.alias;
+                    AppAction.addThread(newThread);
+                    return true;
+                    // if (suc) {
+                    //     alert(JSON.stringify(form.getValue()))
+                    //     return true
+                    // }
+                }
+            }
+        })
     }else {
         $.get('/userById?user=' + userId, function(result) {
-            console.log(result);
+            // console.log(result);
             // newThreads[nowTopThread] = result;
             // newThreads[nowTopThread].flash = true;
             // for(var i in threads){
@@ -50,7 +82,7 @@ var UserStore = merge(EventEmitter.prototype, {
         return UserData;
     },
     getById: function(id){
-        return UserData[id];
+        return (UserData[id] || {});
     },
     isCurUser: function(id){
         return id === currentUser;

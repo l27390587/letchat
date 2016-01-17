@@ -34,8 +34,12 @@ var AppAction = {
             newId: newId
         });
     },
-
-
+    addThread: function(newThreadObj){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.ADD_THREAD,
+            threadObj: newThreadObj
+        });
+    },
     // --------------- msg ---------------
     createMsg: function(text, msgId, threadId, userId){
         ChatDispatcher.handleViewAction({

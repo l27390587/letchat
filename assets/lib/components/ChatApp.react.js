@@ -20,7 +20,9 @@ var ThreadStore = require('../stores/ThreadStore');
 var UserStore = require('../stores/UserStore');
 
 var Resizeable = require('./Resizeable.react');
+var SelfNode = require('./SelfNode.react')
 var ThreadList = require('./ThreadList.react');
+var FriendList = require('./UserList.react');
 var Dialog = require('./MsgList.react');
 var Compose = require('./Compose.react');
 
@@ -37,7 +39,9 @@ var ChatApp = React.createClass({
         return {
             threadW: 150,
             dialogH: 350,
-            composeH: 150
+            composeH: 150,
+            thread:'block',
+            friend:'none'
         }
     },
     responseToResize: function(){
@@ -59,9 +63,19 @@ var ChatApp = React.createClass({
     render: function() {
         // these coms style should be set by ChatApp Component
         // and should response to Resizeable's resize
-        var threadStyle = {
+        var selfNodeStyle = {
             float: 'left',
             width: this.state.threadW + 'px'
+        };
+        var threadStyle = {
+            float: 'left',
+            width: this.state.threadW + 'px',
+            display:this.state.thread
+        };
+        var friendStyle = {
+            float: 'left',
+            width: this.state.threadW + 'px',
+            display:this.state.friend
         };
         var dialogStyle = {
             marginLeft: this.state.threadW + 'px',
@@ -74,7 +88,9 @@ var ChatApp = React.createClass({
 
         return (
             <Resizeable id="chat-window"
-                verLeftNode={<ThreadList style={threadStyle}/>}
+                selfNode = {<SelfNode style={selfNodeStyle} selectNode = {this._selectNode}/>}
+                verLeftThreadNode={<ThreadList style={threadStyle}/>}
+                verLeftFriendNode={<FriendList style={friendStyle}/>}
                 horTopNode={<Dialog style={dialogStyle} />}
                 horBottomNode={<Compose style={compostStyle} textsHandler={this._sendMsg}/>}
 
@@ -87,6 +103,16 @@ var ChatApp = React.createClass({
 
             </Resizeable>
         );
+    },
+    _selectNode:function(className){
+        // console.log(className);
+        if(className == 'thread'){
+            this.setState({thread: 'block'});
+            this.setState({friend: 'none'});
+        }else if (className == 'friend') {
+            this.setState({thread: 'none'});
+            this.setState({friend: 'block'});
+        }
     },
     _resizeVerValidate: function(lw, rw){
         if( lw < 100 || rw< 200 ){

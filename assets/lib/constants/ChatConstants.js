@@ -8,4 +8,5 @@ module.exports = keyMirror({
     MSG_RECEIVE: null,
     Thread_CANCEL: null,
     USER_WATCH:null,
+    ADD_THREAD:null,
 });

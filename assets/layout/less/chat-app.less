@@ -4,13 +4,13 @@
     border: 1px solid #ddd;
     box-shadow: 0 4px 12px -4px rgba(0,0,0,0.5);
 }
-
+@selfNodeHeight: 80px;
 
 .thread-list{
     height: 100%;
     margin: 0;
-    // padding: 1em 0 0 1em;
-    padding: 1em 0 0 0;
+    padding:0;
+    padding-top: @selfNodeHeight;
     list-style: none;
 
     background-color: #f0f0f0;
@@ -51,7 +51,7 @@
                 margin-right: 5px;
             }
         }
-        
+
         .cancelButton{
             display: none;
         }
@@ -62,6 +62,65 @@
 
     }
 }
+.user-list{
+    height: 100%;
+    margin:0;
+    padding: 0;
+    padding-top: @selfNodeHeight;
+    clear: both;
+    .user-item{
+        padding: 0;
+        color: #666;
+        cursor: pointer;
+        font-size: 1em;
+        .text-collapse();
+        .tst(all 100ms ease-in;);
+        position: relative;
+        .user-list-avatar{
+            width: 40px;
+            height: 40px;
+        }
+        .user-list-alias{
+            display: inline-block;
+            padding-left: 5px;
+            position: absolute;
+            top: 15px;
+        }
+    }
+}
+.self-node{
+    height:@selfNodeHeight;
+    position: absolute;
+    z-index: 5;
+    .self-node-avatar{
+        width: 40px;
+        height: 40px;
+    }
+    .self-node-select{
+        height: 35px;
+        // border: 1px solid black;
+        .self-node-thread,.self-node-friend{
+            width: 50%;
+            height: 100%;
+        }
+    }
+}
+.user-modal{
+    .modal-img{
+        width:150px;
+        height: 150px;
+    }
+    .modal-name{
+        margin-bottom: 0;
+        text-align: center;
+        font-weight: 400;
+        font-size: 24px;
+    }
+}
+.rct-modal-footer{
+    text-align: center!important;
+}
 
 @import './msg-list.less';
 @import "./compose.less";
+@import './user-list.less';

@@ -15,7 +15,6 @@ var threads = {};
 var curThread = '';
 
 
-
 // set 方法们, 本文件内部维护数据
 function initThreadData(serverThreads){
     serverThreads.forEach(function(t){
@@ -70,6 +69,14 @@ function cancelThread(tid){
     curThread = newcurThread;
     ThreadStore.emitChange();
 }
+
+function addThread (threadObj){
+    // console.log(threadObj);
+    threads[threadObj.id] = threadObj;
+    threads[threadObj.id].members = threadObj.members.map(function(userid){
+        return UserStore.getById( userid );
+    });
+}
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
     getAll: function(){
@@ -80,6 +87,12 @@ var ThreadStore = merge(EventEmitter.prototype, {
     },
     getById: function (id) {
         return threads[id];
+    },
+    insert:function(t){
+        threads[t.id] = t;
+        threads[t.id].members = t.members.map(function(userid){
+            return UserStore.getById( userid );
+        });
     },
     deleteById:function (id) {
         delete threads[id];
@@ -120,6 +133,10 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
             break;
         case ChatConstants.Thread_CANCEL:
             cancelThread( action.id );
+            break;
+        case ChatConstants.ADD_THREAD:
+            addThread( action.threadObj );
+            ThreadStore.emitChange();
             break;
     };
 });
