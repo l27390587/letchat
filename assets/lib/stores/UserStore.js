@@ -35,7 +35,8 @@ function setCurUser(userId){
     currentUser = userId;
 }
 function watchUser(userId){
-    var nowUser = UserData[userId]
+    var nowUser = UserData[userId];
+
     if(nowUser){
         Modal.open({
             header: '',

@@ -1,11 +1,14 @@
 var socketIO = require('socket.io');
 
 var io = null,
-    msg = null;
+    msg = null,
+    thread = null,
+    user = null;
 function log(l){
     console.log('SOCKET.IO: ', l);
 }
 function bind(){
+    // console.log(user);
     io.on('connection', function(socket){
         log('a new user connected');
 
@@ -37,8 +40,10 @@ var handler = {
     }
 }
 
-module.exports = function(server,message){
+module.exports = function(server,_msg,_thread,_user){
     io = socketIO(server);
-    msg = message;
+    msg = _msg;
+    thread = _thread;
+    user = _user;
     bind();
 }

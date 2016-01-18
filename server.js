@@ -23,7 +23,6 @@ app.use( express.static(__dirname + "/assets") );
 var msg = require('./backend/msg.js');
 var thread = require('./backend/thread.js');
 var user = require('./backend/user.js');
-var msg = require('./backend/msg.js');
 // 路由
 app.get('/msgInit', function(req, res){
     msg.getAll(function(doc){
@@ -70,4 +69,4 @@ server.listen(port, function(){
 
 
 var socketChat = require('./backend/socketChat');
-socketChat(server,msg);
+socketChat(server,msg,thread,user);

@@ -3,6 +3,7 @@ var ChatDispatcher = require('../dispatcher/ChatDispatcher');
 var ChatConstants = require('../constants/ChatConstants');
 
 var UserStore = require('../stores/UserStore');
+var ThreadStore = require('../stores/ThreadStore');
 var AppAction = require('../actions/AppAction');
 
 var _socket = null;
@@ -27,12 +28,29 @@ ChatDispatcher.register(function(payload){
         case ChatConstants.MSG_CREATE:
             var msgObj = action.msgObj;
             if(msgObj.text.trim() !== ''){
-                sendMsgToServer(msgObj);
+
+                $.get('/threadById?thread=' + msgObj.thread, function(result) {
+                    if(result){
+
+                    }else{
+                        var newThread = ThreadStore.getById(msgObj.thread);
+
+                    }
+                    console.log(result);
+                    // newThreads[nowTopThread] = result;
+                    // newThreads[nowTopThread].flash = true;
+                    // for(var i in threads){
+                    //     newThreads[i] = threads[i];
+                    // }
+                    // threads = newThreads;
+                    // ThreadStore.emitChange();
+                });
+                // sendMsgToServer(msgObj);
             }
             break;
     }
 
-    // do nothing... 
+    // do nothing...
 });
 
 

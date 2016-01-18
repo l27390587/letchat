@@ -72,10 +72,18 @@ function cancelThread(tid){
 
 function addThread (threadObj){
     // console.log(threadObj);
-    threads[threadObj.id] = threadObj;
-    threads[threadObj.id].members = threadObj.members.map(function(userid){
-        return UserStore.getById( userid );
-    });
+    var existFlag = 0 ;
+    for(var i in threads){
+        if(threadObj.name == threads[i].name){
+            existFlag = 1;
+        }
+    }
+    if(!existFlag){
+        threads[threadObj.id] = threadObj;
+        threads[threadObj.id].members = threadObj.members.map(function(userid){
+            return UserStore.getById( userid );
+        });
+    }
 }
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
