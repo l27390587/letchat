@@ -71,19 +71,36 @@ function cancelThread(tid){
 }
 
 function addThread (threadObj){
-    // console.log(threadObj);
     var existFlag = 0 ;
     for(var i in threads){
         if(threadObj.name == threads[i].name){
             existFlag = 1;
         }
     }
-    if(!existFlag){
-        threads[threadObj.id] = threadObj;
-        threads[threadObj.id].members = threadObj.members.map(function(userid){
-            return UserStore.getById( userid );
-        });
-    }
+    $.get('/threadByMember?user=' + threadObj.members, function(result) {
+        // console.log(result);
+        if(result){
+            threads[result.id] = result;
+            threads[result.id].members = result.members.map(function(userid){
+                return UserStore.getById( userid );
+            });
+            ThreadStore.emitChange();
+        }else{
+
+        }
+    });
+
+        // if(!existFlag){
+        //     threads[threadObj.id] = threadObj;
+        //     threads[threadObj.id].members = threadObj.members.map(function(userid){
+        //         return UserStore.getById( userid );
+        //     });
+        // }
+        //
+        // ThreadStore.emitChange();
+
+
+
 }
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
@@ -96,12 +113,12 @@ var ThreadStore = merge(EventEmitter.prototype, {
     getById: function (id) {
         return threads[id];
     },
-    insert:function(t){
-        threads[t.id] = t;
-        threads[t.id].members = t.members.map(function(userid){
-            return UserStore.getById( userid );
-        });
-    },
+    // insert:function(t){
+    //     threads[t.id] = t;
+    //     threads[t.id].members = t.members.map(function(userid){
+    //         return UserStore.getById( userid );
+    //     });
+    // },
     deleteById:function (id) {
         delete threads[id];
     },

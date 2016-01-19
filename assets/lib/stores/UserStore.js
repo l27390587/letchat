@@ -55,7 +55,7 @@ function watchUser(userId){
                     newThread.members.push(currentUser);
                     newThread.members.push(userId);
                     newThread.c_time = Date.now();
-                    newThread.name = nowUser.alias;
+                    newThread.name = UserData[currentUser].alias + "-" + nowUser.alias;
                     AppAction.addThread(newThread);
                     return true;
                     // if (suc) {

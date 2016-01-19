@@ -28,15 +28,45 @@ var handler = {
         // log(msgObj);
         // 时间修正... 有必要吗
         var serverTime = Date.now();
+        //修正创建msg时间
         var timeDis = serverTime - msgObj.time;
         if( timeDis < 0 || timeDis > 60*1000 ){
             msgObj.time = serverTime;
         }
-        var storeMsg = new msg(msgObj);
-        storeMsg.save();
-        // save to db...
-        socket.broadcast.emit('msg-others', msgObj);
-        // socket.emit('msg-others', msgObj);
+        
+        if(msgObj.newThread){
+            //规范newthread格式以save
+            var newThread = msgObj.newThread;
+            var newThreadMember = [];
+            newThread.members.forEach(function(t){
+                newThreadMember.push(t.id);
+            })
+            newThread.members = newThreadMember;
+            delete  newThread.flash;
+
+            //修正创建thread时间
+            timeDis = serverTime - newThread.c_time;
+            if( timeDis < 0 || timeDis > 60*1000 ){
+                newThread.c_time = serverTime;
+            }
+            //save to db
+            thread.add(newThread,function(doc){
+                delete msgObj.newThread;
+                var storeMsg = new msg(msgObj);
+                storeMsg.save();
+                // save to db...
+                socket.broadcast.emit('msg-others', msgObj);
+                // socket.emit('msg-others', msgObj);
+            })
+            // console.log(newThread);
+        }else{
+            var storeMsg = new msg(msgObj);
+            storeMsg.save();
+            // save to db...
+            socket.broadcast.emit('msg-others', msgObj);
+            // socket.emit('msg-others', msgObj);
+        }
+
     }
 }
 

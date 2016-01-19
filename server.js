@@ -42,9 +42,21 @@ app.get('/threadById', function(req, res){
 })
 app.get('/threadByMember', function(req, res){
     var uid = req.query.user;
-    thread.getByMember(uid,function(doc){
-        res.json(doc);
-    })
+    if(uid.indexOf(',')>0){
+        uid = uid.split(',');
+        thread.getByMember(uid,function(doc1){
+            uid = uid.reverse();
+            thread.getByMember(uid,function(doc2){
+                doc = doc1.concat(doc2);
+                res.json(doc[0]);
+            })
+        })
+    }else{
+        thread.getByMember(uid,function(doc){
+            res.json(doc);
+        })
+    }
+
 })
 app.get('/userById', function(req, res){
     var uid = req.query.user;
