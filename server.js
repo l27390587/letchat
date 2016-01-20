@@ -30,7 +30,8 @@ app.get('/msgInit', function(req, res){
     })
 })
 app.get('/threadInit', function(req, res){
-    thread.getAll(function(doc){
+    var uid = req.query.user;
+    thread.getByMember(uid,function(doc){
         res.json(doc);
     })
 })

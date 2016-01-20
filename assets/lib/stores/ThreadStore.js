@@ -14,7 +14,6 @@ var CHANGE_EVENT = 'change';
 var threads = {};
 var curThread = '';
 
-
 // set 方法们, 本文件内部维护数据
 function initThreadData(serverThreads){
     serverThreads.forEach(function(t){
@@ -29,6 +28,20 @@ function initThreadData(serverThreads){
 function changeThread(newId){
     curThread = newId;
     ThreadStore.getById(newId).flash = false;
+}
+function letTopThread(msgObj){
+    var newThreads = {},
+        nowTopThread = msgObj.thread;
+    newThreads[nowTopThread] = ThreadStore.getById(nowTopThread);
+    for(var i in threads){
+        if(nowTopThread == i){
+            continue;
+        }
+        newThreads[i] = threads[i];
+    }
+
+    threads = newThreads;
+    ThreadStore.emitChange();
 }
 function switchThread(msgObj){
     var newThreads = {},
@@ -48,14 +61,19 @@ function switchThread(msgObj){
         ThreadStore.emitChange();
     }else{
         $.get('/threadById?thread=' + nowTopThread, function(result) {
-            // console.log(result);
-            newThreads[nowTopThread] = result;
-            newThreads[nowTopThread].flash = true;
-            for(var i in threads){
-                newThreads[i] = threads[i];
+            if(result.members.indexOf(UserStore.getCurUser()) >= 0){
+                newThreads[result.id] = result;
+                newThreads[result.id].members = result.members.map(function(userid){
+                    return UserStore.getById( userid );
+                });
+        //         newThreads[nowTopThread] = result;
+                newThreads[nowTopThread].flash = true;
+                for(var i in threads){
+                    newThreads[i] = threads[i];
+                }
+                threads = newThreads;
+                ThreadStore.emitChange();
             }
-            threads = newThreads;
-            ThreadStore.emitChange();
         });
     }
 }
@@ -72,35 +90,34 @@ function cancelThread(tid){
 
 function addThread (threadObj){
     var existFlag = 0 ;
+    //此处可能有BUG
     for(var i in threads){
-        if(threadObj.name == threads[i].name){
+        var membersArray = [];
+        threads[i].members.forEach(function(item){
+            membersArray.push(item.id);
+        })
+        if(threadObj.members.toString() == membersArray.toString() || threadObj.members.toString() == membersArray.reverse().toString() ){
             existFlag = 1;
         }
     }
-    $.get('/threadByMember?user=' + threadObj.members, function(result) {
-        // console.log(result);
-        if(result){
-            threads[result.id] = result;
-            threads[result.id].members = result.members.map(function(userid){
-                return UserStore.getById( userid );
-            });
-            ThreadStore.emitChange();
-        }else{
-
-        }
-    });
-
-        // if(!existFlag){
-        //     threads[threadObj.id] = threadObj;
-        //     threads[threadObj.id].members = threadObj.members.map(function(userid){
-        //         return UserStore.getById( userid );
-        //     });
-        // }
-        //
-        // ThreadStore.emitChange();
-
-
-
+    if(!existFlag){
+        $.get('/threadByMember?user=' + threadObj.members, function(result) {
+            // console.log(result);
+            if(result){
+                threads[result.id] = result;
+                threads[result.id].members = result.members.map(function(userid){
+                    return UserStore.getById( userid );
+                });
+                ThreadStore.emitChange();
+            }else{
+                threads[threadObj.id] = threadObj;
+                threads[threadObj.id].members = threadObj.members.map(function(userid){
+                    return UserStore.getById( userid );
+                });
+                ThreadStore.emitChange();
+            }
+        });
+    }
 }
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
@@ -142,7 +159,7 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
     switch(actionType){
         case ChatConstants.APP_INIT:
             ChatDispatcher.waitFor([UserStore.dispatchToken]);
-            $.get('/threadInit', function(result) {
+            $.get('/threadInit?user=' + UserStore.getCurUser(), function(result) {
                 initThreadData( result );
                 // ~~不触发change, 最后在msgstore中触发~~
                 ThreadStore.emitChange();
@@ -152,6 +169,9 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
             // if()  // 检查是否是可用的uuid?
             changeThread( action.newId );
             ThreadStore.emitChange();
+            break;
+        case ChatConstants.MSG_CREATE:
+            letTopThread( action.msgObj );
             break;
         case ChatConstants.MSG_RECEIVE:
             switchThread( action.msgObj );

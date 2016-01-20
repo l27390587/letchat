@@ -11,7 +11,7 @@ var CHANGE_EVENT = 'change';
 
 
 var MsgData = {};
-
+window.msg = MsgData;
 var _dataHandler = {
     init: function(msgs){
         msgs.forEach(function(m){
