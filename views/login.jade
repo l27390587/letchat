@@ -1,0 +1,25 @@
+extends helper/layout
+block head
+    title server端渲染的react组件 -&gt; 页面
+    link(rel="stylesheet", href="layout/css/layout.css")
+block body
+    #login-module.full-module.active
+        .module-mask
+        .module-content
+            .avatar-ctn
+                img.avatar(src="/img/avatar/default.jpg")
+            .form#login-form
+                //- input#alias-input(type="text", placeholder="alias, more than 2 chars")
+                input#choose-user(type="text")
+                a#login-btn.btn.btn-primary.btn-block.disabled(href="#") Login
+
+    style.
+        #choose-user{
+            display: block;
+            width: 100%;
+            margin: 0.75em 0;
+            font-size: 20px;
+        }
+    
+    script(src="/lib/vendor/jquery-1.8.3.js")
+    script(src="/lib/login.js")

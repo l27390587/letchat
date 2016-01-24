@@ -20,4 +20,13 @@ User.getById = function (uid,cb){
         }
     })
 }
+User.getByAlias = function (_alias,cb){
+    userModel.findOne({alias:_alias},function(err,doc){
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    })
+}
 module.exports = User;

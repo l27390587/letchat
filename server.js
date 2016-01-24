@@ -4,6 +4,10 @@ var http = require('http');
 // 服务器相关
 var express = require('express');
 var morgan = require('morgan');
+
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session');
 // 程序主体用到的第三方模块
 // var nodeJSX = require('node-jsx').install({harmony: true});
 var react = require('react');
@@ -19,11 +23,33 @@ app.set('view engine', 'jade');
 
 // app.use(morgan('dev'));
 app.use( express.static(__dirname + "/assets") );
+app.use(cookieParser());
+app.use(session({
+  secret: 'cookieSecret',
+  key: 'LX',//cookie name
+  resave: true,
+  saveUninitialized: true,
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+}));
 
 var msg = require('./backend/msg.js');
 var thread = require('./backend/thread.js');
 var user = require('./backend/user.js');
 // 路由
+function checkLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  next();
+}
+
+function checkNotLogin(req, res, next) {
+  if (req.session.user) {
+    return res.redirect('back');//返回之前的页面
+  }
+  next();
+}
+// 数据接口
 app.get('/msgInit', function(req, res){
     msg.getAll(function(doc){
         res.json(doc);
@@ -65,10 +91,33 @@ app.get('/userById', function(req, res){
         res.json(doc);
     })
 })
+app.get('/login', checkNotLogin);
+app.get('/login', function(req, res){
+    var alias = req.query.alias;
+    if(alias){
+        user.getByAlias(alias,function(doc){
+            if(doc){
+                req.session.user =doc.id;
+                res.redirect('/');
+            }else{
+                res.render('login');
+            }
+        })
+    }else{
+        res.render('login');
+    }
+
+})
+app.get('/logout', function(req, res){
+    req.session.user = null;
+    res.redirect('/');
+})
+app.get('/', checkLogin);
 app.get('/', function(req, res){
     res.render('index', {
         // comHTML: react.renderComponentToString(d())
-        comHTML: ''
+        comHTML: '',
+        _uid: req.session.user,
     });
 });
 

@@ -32,14 +32,9 @@ ChatDispatcher.register(function(payload){
                 $.get('/threadById?thread=' + msgObj.thread, function(result) {
                     if(result == null){
                         var newThread = ThreadStore.getById(msgObj.thread);
-                        // var newThreadMember = [];
-                        // newThread.members.forEach(function(t){
-                        //     newThreadMember.push(t.id);
-                        // })
-                        // newThread.members = newThreadMember;
-                        // delete  newThread.flash;
+
                         msgObj.newThread = newThread;
-                        // console.log(msgObj);
+
                         sendMsgToServer(msgObj);
                     }else{
                         sendMsgToServer(msgObj);

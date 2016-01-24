@@ -3,6 +3,7 @@ var AppAction = require('../actions/AppAction');
 
 
 var UserStore = require('../stores/UserStore');
+var Modal = require('rctui/Modal');
 
 function getSelfNode(){
     var currentUserId = UserStore.getCurUser();
@@ -41,7 +42,24 @@ var SelfNode = React.createClass({
         this.props.selectNode(className);
         // console.log(className);
     },
-
+    showUser:function(){
+        Modal.open({
+            header: '',
+            content: (
+                <div className = 'user-modal'>
+                    <img className="modal-img"  src={this.state.selfData.avatar} />
+                    <p className="modal-name">{this.state.selfData.alias}</p>
+                </div>
+            ),
+            width: 200,
+            buttons: {
+                '注销': () => {
+                    window.location.href="/logout";
+                    return true;
+                }
+            }
+        })
+    }
 });
 
 module.exports = SelfNode;

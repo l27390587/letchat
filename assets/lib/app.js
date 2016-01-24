@@ -18,5 +18,5 @@ var ChatApp = require('./components/ChatApp.react.js');
 ReactDOM.render(<ChatApp />, document.querySelector('#chat-ctn'));
 
 
-
+//最后打包 可直接调用前面包的方法
 require('./demoModule/login');
