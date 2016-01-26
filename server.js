@@ -8,6 +8,9 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+
+var MemoryStore = require('express-session/session/memory');
+var session_store = new MemoryStore();
 // 程序主体用到的第三方模块
 // var nodeJSX = require('node-jsx').install({harmony: true});
 var react = require('react');
@@ -30,6 +33,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  store: session_store,
 }));
 
 var msg = require('./backend/msg.js');
@@ -131,4 +135,4 @@ server.listen(port, function(){
 
 
 var socketChat = require('./backend/socketChat');
-socketChat(server,msg,thread,user);
+socketChat(server,msg,thread,user,session_store);

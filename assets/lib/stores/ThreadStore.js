@@ -114,6 +114,7 @@ function addThread (threadObj){
                 threads[threadObj.id].members = threadObj.members.map(function(userid){
                     return UserStore.getById( userid );
                 });
+                threads[threadObj.id].new = true;
                 ThreadStore.emitChange();
             }
         });

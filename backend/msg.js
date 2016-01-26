@@ -29,7 +29,7 @@ Msg.prototype.save = function() {
         if (err) {
             console.log(err);
         } else {
-            console.log(doc);
+            // console.log(doc);
         }
     });
 }

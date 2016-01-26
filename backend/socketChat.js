@@ -1,9 +1,14 @@
 var socketIO = require('socket.io');
-
+var cookie = require('cookie-parser/node_modules/cookie');
+var cookieParser = require('cookie-parser');
 var io = null,
     msg = null,
     thread = null,
-    user = null;
+    user = null,
+    session_store = null;
+
+var sockets = {};
+
 function log(l){
     console.log('SOCKET.IO: ', l);
 }
@@ -11,12 +16,23 @@ function bind(){
     // console.log(user);
     io.on('connection', function(socket){
         log('a new user connected');
-
+        var sessId = cookie.parse(socket.request.headers.cookie).LX.substr(2,32);
+        var userId = '';
+        session_store.get(sessId, function (error, session) {
+            var sess = session || {};
+            if (sess.user){
+                userId = sess.user;
+                sockets[userId] = socket;
+                log(Object.keys(sockets));
+            };
+        });
+        // log(socket.request.headers.cookie);
         socket.on('msg', function(data){
-            handler.receiveAndBroadCast(socket, data);
+            handler.receiveAndBroadCast(socket, data ,userId);
         });
 
         socket.on('disconnect', function(){
+            delete sockets[userId];
             log('a user logged out...')
         });
     });
@@ -24,7 +40,7 @@ function bind(){
 
 
 var handler = {
-    receiveAndBroadCast: function(socket, msgObj){
+    receiveAndBroadCast: function(socket, msgObj ,mySelf){
         // log(msgObj);
         // 时间修正... 有必要吗
         var serverTime = Date.now();
@@ -55,25 +71,36 @@ var handler = {
                 var storeMsg = new msg(msgObj);
                 storeMsg.save();
                 // save to db...
-                socket.broadcast.emit('msg-others', msgObj);
-                // socket.emit('msg-others', msgObj);
+
+                newThreadMember.forEach(function(item){
+                    if(sockets[item]&&item!=mySelf){
+                        sockets[item].emit('msg-others', msgObj);
+                    }    
+                })
+                //转播给对应thread的所有在线user
             })
-            // console.log(newThread);
         }else{
             var storeMsg = new msg(msgObj);
             storeMsg.save();
             // save to db...
-            socket.broadcast.emit('msg-others', msgObj);
-            // socket.emit('msg-others', msgObj);
+            thread.getById(msgObj.thread,function(doc){
+                doc.members.forEach(function(item){
+                    if(sockets[item]&&item!=mySelf){
+                        sockets[item].emit('msg-others', msgObj);
+                    }    
+                })
+            })
+            //转播给对应thread的所有在线user
         }
 
     }
 }
 
-module.exports = function(server,_msg,_thread,_user){
+module.exports = function(server,_msg,_thread,_user,_session_store){
     io = socketIO(server);
     msg = _msg;
     thread = _thread;
     user = _user;
+    session_store = _session_store;
     bind();
 }

@@ -29,17 +29,18 @@ ChatDispatcher.register(function(payload){
             var msgObj = action.msgObj;
             if(msgObj.text.trim() !== ''){
 
-                $.get('/threadById?thread=' + msgObj.thread, function(result) {
-                    if(result == null){
+                // $.get('/threadById?thread=' + msgObj.thread, function(result) {
+                    if(ThreadStore.getById(msgObj.thread).new){
                         var newThread = ThreadStore.getById(msgObj.thread);
-
+                        console.log("xinde shechuqule");
+                        delete ThreadStore.getById(msgObj.thread).new;
                         msgObj.newThread = newThread;
 
                         sendMsgToServer(msgObj);
                     }else{
                         sendMsgToServer(msgObj);
                     }
-                });
+                // });
             }
             break;
     }
