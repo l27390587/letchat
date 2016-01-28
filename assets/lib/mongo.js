@@ -38,7 +38,7 @@ db.once('open', function() {
         avatar: 'chenllos.jpg',
         mail: ''
     }];
-    // userModel.collection.insert(userBag, callback);
+    userModel.collection.insert(userBag, callback);
 //```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
     var threadSchema = new Schema({
         id: String,
@@ -158,7 +158,7 @@ db.once('open', function() {
     }];
     // msgModel.collection.insert(msgBag, callback);
 //```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
-    userModel.find(callback);
+    // userModel.find(callback);
     function callback(err, item) {
         if (err) {
             console.log(err);

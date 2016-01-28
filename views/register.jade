@@ -1,0 +1,30 @@
+extends helper/layout
+block head
+    title rigster
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="layout/css/bootstrap.min.css")
+    link(rel="stylesheet", href="layout/css/supersized.css")
+    link(rel="stylesheet", href="layout/css/register.css")
+
+block body
+    .page-container
+        h1 登录(Login)
+        form(action="/register" method="post")
+            input.username(type="text" name="username" placeholder="请输入您的用户名！")
+            input.password(type="password" name="password" placeholder="请输入您的用户密码！")
+            input.Captcha(type="Captcha" name="Captcha" placeholder="请输入您的验证码！")
+            input.msgs(type="button" value="获取短信验证码")
+            button(type="button" class="submit_button") 登录
+            .error
+                span +
+    #errorModal.modal.fade.bs-example-modal-lg(tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel")
+        .modal-dialog.modal-lg
+            .modal-content 验证码错误╮(╯▽╰)╭
+    #existModal.modal.fade.bs-example-modal-lg(tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel")
+        .modal-dialog.modal-lg
+            .modal-content 这个手机号已经被注册过了(。・`ω´・)
+    script(src="/lib/vendor/jquery-2.2.0.min.js")
+    script(src="/lib/vendor/supersized.3.2.7.min.js")
+    script(src="/lib/vendor/supersized-init.js")
+    script(src="/lib/vendor/bootstrap.min.js")
+    script(src="/lib/register.js")
