@@ -36,16 +36,17 @@ app.use(session({
   cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
   store: session_store,
 }));
-
+require('./backend/db.js');
 var msg = require('./backend/msg.js');
 var thread = require('./backend/thread.js');
 var user = require('./backend/user.js');
+var userSecret = require('./backend/userSecret.js');
 //duanxin jiekou
 var emitMessage = require('./backend/dayuSDKsign/emitMessage')
 
 // 路由
 var route = require('./backend/routes/route');
-route(app,msg,thread,user,urlencodedParser,emitMessage);
+route(app,msg,thread,user,userSecret,urlencodedParser,emitMessage);
 
 
 var port = 3003;

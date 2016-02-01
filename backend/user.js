@@ -29,4 +29,13 @@ User.getByAlias = function (_alias,cb){
         }
     })
 }
+User.add = function (userObj,cb){
+    userModel.collection.insert(userObj, function(err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    });
+}
 module.exports = User;

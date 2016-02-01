@@ -1,5 +1,5 @@
 
-var userSelect = $('#choose-user');
+var userSelect = $('#username');
 
 userSelect.on('keyup', function(){
     if(userSelect.val() != '' && userSelect.val() != 'undefined'){
@@ -15,14 +15,16 @@ $('#login-btn').on('click', function(){
         return false;
     }
     else{
-        loginCallback(userSelect.val().trim());
+        loginCallback(userSelect.val().trim(),$('#password').val().trim());
     }
 });
 
 
-function loginCallback(userName){
-    $.get('/login?alias=' + userName, function(result) {
-        // console.log(result);
-        window.location.href="/"; 
-    });
+function loginCallback(username,password){
+    $.post("/login",
+        {username:username,password:password},
+        function(result){
+            window.location.href="/";
+        }
+    );
 }

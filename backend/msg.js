@@ -1,21 +1,12 @@
 var mongoose = require("mongoose");
-require("./db.js");
-var db = mongoose.connection;
-// db.once('open', function() {
 var msgModel = mongoose.model('Msg');
 
-
-// })
 function Msg(obj) {
     this.id = obj.id;
     this.text = obj.text;
     this.time = obj.time;
     this.user = obj.user;
     this.thread = obj.thread;
-}
-//每次connect之后都要disconnect
-Msg.disconnect = function () {
-    db.close();
 }
 Msg.prototype.save = function() {
     var msg = {

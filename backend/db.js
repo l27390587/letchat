@@ -25,3 +25,9 @@ var msgSchema = new Schema({
     thread: String
 });
 mongoose.model('Msg', msgSchema);
+var userSecretSchema = new Schema({
+    id: String,
+    pwd: String,
+    friends: Array
+});
+mongoose.model('UserSecret', userSecretSchema);

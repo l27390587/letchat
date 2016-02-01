@@ -2,6 +2,7 @@ var app = null,
     msg = null,
     thread = null,
     user = null,
+    userSecret = null,
     urlencodedParser = null,
     emitMessage = null;
 function log(l){
@@ -16,7 +17,7 @@ function checkLogin(req, res, next) {
 
 function checkNotLogin(req, res, next) {
   if (req.session.user) {
-    return res.redirect('back');//返回之前的页面
+    return res.redirect('/');//返回之前的页面
   }
   next();
 }
@@ -75,22 +76,19 @@ function bind(){
             }
         })
     })
+    app.post('/login',urlencodedParser, function(req, res){
+        userSecret.login(req.body.username,req.body.password,function(doc){
+            if(doc){
+                req.session.user =doc.id;
+                res.send('success');
+            }else{
+                res.send('error');
+            }
+        })
+    })
     app.get('/login', checkNotLogin);
     app.get('/login', function(req, res){
-        var alias = req.query.alias;
-        if(alias){
-            user.getByAlias(alias,function(doc){
-                if(doc){
-                    req.session.user =doc.id;
-                    res.redirect('/');
-                }else{
-                    res.render('login');
-                }
-            })
-        }else{
             res.render('login');
-        }
-
     })
     app.get('/logout', function(req, res){
         req.session.user = null;
@@ -100,9 +98,29 @@ function bind(){
         res.render('register');
     })
     app.post('/register',urlencodedParser, function(req, res){
-        // res.json(req.body);
+        console.log(emitMessage.getAll());
+        var username = req.body.username;
         if(emitMessage.getRandom(req.body.username) == req.body.captcha){
-            res.send(emitMessage.getAll());
+            var secretObj = {
+                id : req.body.username,
+                pwd : req.body.password,
+                friends : []
+            };
+            userSecret.add(secretObj,function(doc){
+                var userObj = {
+                    id : req.body.username,
+                    alias : req.body.username,
+                    avatar : '',
+                    mail : ''
+                }
+                user.add(userObj,function(doc){
+                        req.session.user = username;
+                        emitMessage.deleteRandom(req.body.username)
+                        res.send("success");
+                })
+            })
+        }else {
+            res.send("error");
         }
     })
     app.get('/', checkLogin);
@@ -114,11 +132,12 @@ function bind(){
         });
     });
 }
-module.exports = function(_app,_msg,_thread,_user,_urlencodedParser,_emitMessage){
+module.exports = function(_app,_msg,_thread,_user,_userSecret,_urlencodedParser,_emitMessage){
     app = _app;
     msg = _msg;
     thread = _thread;
     user = _user;
+    userSecret = _userSecret;
     urlencodedParser = _urlencodedParser;
     emitMessage = _emitMessage;
     bind();

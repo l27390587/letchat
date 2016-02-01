@@ -33,12 +33,16 @@ jQuery(document).ready(function() {
             $.post("/register",
                 {username:username,password:password,captcha:captcha},
                 function(result){
-                    console.log(result);
+                    if (result == "success") {
+                        window.location.href="/";
+                    }else if (result == "error") {
+                        $('#errorModal').modal({
+                            keyboard: false
+                        })
+                    };
                 }
             );
-            // $('#errorModal').modal({
-            //     keyboard: false
-            // })
+
         }
     });
 
@@ -53,29 +57,28 @@ jQuery(document).ready(function() {
         var code=$(this);
         if (validCode && usernameCheck.call(this,username)) {
             $.get("/emitMessage?username=" + username,function(result){
-                    if(result == "exist"){
-                        $('#existModal').modal({
-                            keyboard: false
-                        })
-                    }else if(JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response&&
-                    JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response.result&&
-                    JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response.result.success)
-                    {
-                        validCode=false;
-                        code.addClass("msgs1");
-                        var t=setInterval(function() {
-                            time--;
-                            code.val(time+"秒");
-                            if (time==0) {
-                                clearInterval(t);
-                                code.val("重新获取");
-                                validCode=true;
-                                code.removeClass("msgs1");
-                            }
-                        },1000)
-                    }else{
-                        console.log(result);
-                    }
+                if(result == "exist"){
+                    $('#existModal').modal({
+                        keyboard: false
+                    })
+                }else if(JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response&&
+                JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response.result&&
+                JSON.parse(result).alibaba_aliqin_fc_sms_num_send_response.result.success){
+                    validCode=false;
+                    code.addClass("msgs1");
+                    var t=setInterval(function() {
+                        time--;
+                        code.val(time+"秒");
+                        if (time==0) {
+                            clearInterval(t);
+                            code.val("重新获取");
+                            validCode=true;
+                            code.removeClass("msgs1");
+                        }
+                    },1000)
+                }else{
+                    console.log(result);
+                }
             });
         }
     })

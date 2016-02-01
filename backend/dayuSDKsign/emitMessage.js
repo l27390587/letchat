@@ -22,7 +22,6 @@ function emitMessage (randomNumber,tel,callback){
     }
 
     var url = 'http://gw.api.taobao.com/router/rest?sign=' + sign.sign + urlquery;
-    // console.log(url)
     request(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             callback(body) ;
@@ -30,12 +29,14 @@ function emitMessage (randomNumber,tel,callback){
     })
 }
 module.exports = function(id,random,callback){
-    console.log(random);
     randoms[id] = random;
     emitMessage(random,id,callback);
 };
 module.exports.getRandom = function(id){
     return randoms[id];
+}
+module.exports.deleteRandom = function(id){
+     delete randoms[id];
 }
 module.exports.getAll = function(id){
     return randoms;

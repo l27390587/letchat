@@ -12,11 +12,12 @@ block body
                 img.avatar(src="/img/avatar/default.jpg")
             .form#login-form
                 //- input#alias-input(type="text", placeholder="alias, more than 2 chars")
-                input#choose-user(type="text")
+                input#username(type="text")
+                input#password(type="text")
                 a#login-btn.btn.btn-primary.btn-block.disabled(href="#") Login
 
     style.
-        #choose-user{
+        #username , #password{
             display: block;
             width: 100%;
             margin: 0.75em 0;

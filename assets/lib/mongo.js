@@ -5,6 +5,23 @@ var db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', function() {
     //这里建立模式和模型
+    var userSecretSchema = new Schema({
+        id: String,
+        pwd: String,
+        friends: Array
+    });
+    var userSecretModel = db.model('UserSecret', userSecretSchema);
+    var userSecretBag = [{
+        id: '9c4d1442-c9bd-4ddb-9313-355bacdf570a',
+        pwd: '111111',
+        friends: ['4aaf6cb7-35a1-413b-a80e-b45d00f8397c', '7b6e1f55-1455-474e-984e-9681d87b4e8b']
+    },{
+        id: '4aaf6cb7-35a1-413b-a80e-b45d00f8397c',
+        pwd: '111111',
+        friends: ['9c4d1442-c9bd-4ddb-9313-355bacdf570a', '7b6e1f55-1455-474e-984e-9681d87b4e8b']
+    }];
+    userSecretModel.collection.insert(userSecretBag, callback);
+//`````````````````````````````````````````````````
     var userSchema = new Schema({
         id: String,
         alias: String,
@@ -38,7 +55,7 @@ db.once('open', function() {
         avatar: 'chenllos.jpg',
         mail: ''
     }];
-    userModel.collection.insert(userBag, callback);
+    // userModel.collection.insert(userBag, callback);
 //```````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
     var threadSchema = new Schema({
         id: String,
