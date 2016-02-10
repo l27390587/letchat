@@ -28,20 +28,23 @@ ChatDispatcher.register(function(payload){
         case ChatConstants.MSG_CREATE:
             var msgObj = action.msgObj;
             if(msgObj.text.trim() !== ''){
+                if(ThreadStore.getById(msgObj.thread).new){
+                    var newThread = ThreadStore.getById(msgObj.thread);
 
-                // $.get('/threadById?thread=' + msgObj.thread, function(result) {
-                    if(ThreadStore.getById(msgObj.thread).new){
-                        var newThread = ThreadStore.getById(msgObj.thread);
-                        console.log("xinde shechuqule");
-                        delete ThreadStore.getById(msgObj.thread).new;
-                        msgObj.newThread = newThread;
+                    delete ThreadStore.getById(msgObj.thread).new;
+                    msgObj.newThread = newThread;
 
-                        sendMsgToServer(msgObj);
-                    }else{
-                        sendMsgToServer(msgObj);
-                    }
-                // });
+                    sendMsgToServer(msgObj);
+                }else{
+                    sendMsgToServer(msgObj);
+                }
             }
+            break;
+
+        case ChatConstants.APPLY_FRIEND:
+            var applyer = action.applyer,
+                beApplyed = action.beApplyed;
+            
             break;
     }
 

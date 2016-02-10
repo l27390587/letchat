@@ -22,6 +22,22 @@ function checkNotLogin(req, res, next) {
   next();
 }
 function bind(){
+    app.get('/userInit', function(req, res){
+        var uid = req.query.user;
+        userSecret.getById(uid,function(doc){
+            var friendArray = doc.friends;
+            user.getByIdArray(friendArray,function(doc){
+                res.json(doc);
+            })
+        })
+    })
+    app.get('/talkUserInit', function(req, res){
+        var friendArray = req.query.array;
+        friendArray = friendArray.split(',');
+        user.getByIdArray(friendArray,function(doc){
+            res.json(doc);
+        })
+    })
     app.get('/msgInit', function(req, res){
         msg.getAll(function(doc){
             res.json(doc);
@@ -111,7 +127,7 @@ function bind(){
                     id : req.body.username,
                     alias : req.body.username,
                     avatar : '',
-                    mail : ''
+                    mail : 'default.jpg'
                 }
                 user.add(userObj,function(doc){
                         req.session.user = username;

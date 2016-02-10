@@ -20,6 +20,15 @@ User.getById = function (uid,cb){
         }
     })
 }
+User.getByIdArray = function (friendArray,cb){
+    userModel.where('id').in(friendArray).exec(function(err,doc){
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    })
+}
 User.getByAlias = function (_alias,cb){
     userModel.findOne({alias:_alias},function(err,doc){
         if (err) {

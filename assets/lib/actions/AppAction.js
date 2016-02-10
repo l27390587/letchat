@@ -27,6 +27,25 @@ var AppAction = {
             userId: userId
         });
     },
+    talkUserInit:function(array1,array2){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.TALKUSER_INIT,
+            talkUserArray: array1,
+            threadArray : array2,
+        });
+    },
+    applyFriend:function(str1,str2){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.APPLY_FRIEND,
+            applyer:str1,
+            beApplyed:str2,
+        });
+    },
+    confirmFriend:function(){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.CONFIRM_FRIEND,
+        });
+    },
     // --------------- thread ---------------
     changeThread: function(newId){
         ChatDispatcher.handleViewAction({
@@ -34,9 +53,9 @@ var AppAction = {
             newId: newId
         });
     },
-    addThread: function(newThreadObj){
+    createThread: function(newThreadObj){
         ChatDispatcher.handleViewAction({
-            actionType: ChatlConstants.ADD_THREAD,
+            actionType: ChatlConstants.CREATE_THREAD,
             threadObj: newThreadObj
         });
     },
@@ -55,7 +74,7 @@ var AppAction = {
     },
     cancelThread : function(tid){
         ChatDispatcher.handleViewAction({
-            actionType: ChatlConstants.Thread_CANCEL,
+            actionType: ChatlConstants.THREAD_CANCEL,
             id: tid
         })
     },
@@ -65,7 +84,13 @@ var AppAction = {
             actionType: ChatlConstants.MSG_RECEIVE,
             msgObj: msgObj
         });
-    }
+    },
+    msgInit: function(threadArray){
+        ChatDispatcher.handleViewAction({
+            actionType: ChatlConstants.MSG_INIT,
+            threadArray: threadArray
+        });
+    },
 };
 
 module.exports = AppAction;

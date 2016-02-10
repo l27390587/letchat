@@ -3,6 +3,8 @@
 var EventEmitter = require('events').EventEmitter;
 var merge = require('react/lib/merge');
 
+var AppAction = require('../actions/AppAction');
+
 var ChatDispatcher = require('../dispatcher/ChatDispatcher');
 var ChatConstants = require('../constants/ChatConstants');
 
@@ -14,16 +16,42 @@ var CHANGE_EVENT = 'change';
 var threads = {};
 var curThread = '';
 
+
+
+function cancelDubble(array){
+    var noDubbleTalkUser = [];
+    array.sort();
+    for(var i = 0; i < array.length; i++)
+    {
+        if( array[i+1] && array[i] != array[i + 1])
+        {
+            noDubbleTalkUser.push(array[i]);
+        }
+    }
+    if(array.length){
+        noDubbleTalkUser.push(array[i-1]);
+    }
+    return noDubbleTalkUser;
+}
 // set 方法们, 本文件内部维护数据
 function initThreadData(serverThreads){
+    //初始化
+    var talkUser = [];
+    var threadArray = [];
+
     serverThreads.forEach(function(t){
         threads[t.id] = t;
-        threads[t.id].members = t.members.map(function(userid){
-            return UserStore.getById( userid );
-        });
+        threadArray.push(t.id);
+        talkUser = talkUser.concat(t.members);
     });
-    // init 时 取第一个id
-    changeThread(serverThreads[0].id);
+
+    if(serverThreads.length){
+        // init 时 取第一个id
+        changeThread(serverThreads[0].id);
+    }
+
+    var noDubbleTalkUser = cancelDubble(talkUser);
+    AppAction.talkUserInit(noDubbleTalkUser,threadArray);
 }
 function changeThread(newId){
     curThread = newId;
@@ -62,11 +90,8 @@ function switchThread(msgObj){
     }else{
         $.get('/threadById?thread=' + nowTopThread, function(result) {
             if(result.members.indexOf(UserStore.getCurUser()) >= 0){
-                newThreads[result.id] = result;
-                newThreads[result.id].members = result.members.map(function(userid){
-                    return UserStore.getById( userid );
-                });
-        //         newThreads[nowTopThread] = result;
+                // newThreads[result.id] = result;
+                newThreads[nowTopThread] = result;
                 newThreads[nowTopThread].flash = true;
                 for(var i in threads){
                     newThreads[i] = threads[i];
@@ -88,15 +113,11 @@ function cancelThread(tid){
     ThreadStore.emitChange();
 }
 
-function addThread (threadObj){
+function createThread (threadObj){
     var existFlag = 0 ;
     //此处可能有BUG
     for(var i in threads){
-        var membersArray = [];
-        threads[i].members.forEach(function(item){
-            membersArray.push(item.id);
-        })
-        if(threadObj.members.toString() == membersArray.toString() || threadObj.members.toString() == membersArray.reverse().toString() ){
+        if(threadObj.members.toString() == threads[i].members.toString() || threadObj.members.toString() == threads[i].members.reverse().toString() ){
             existFlag = 1;
         }
     }
@@ -105,15 +126,9 @@ function addThread (threadObj){
             // console.log(result);
             if(result){
                 threads[result.id] = result;
-                threads[result.id].members = result.members.map(function(userid){
-                    return UserStore.getById( userid );
-                });
                 ThreadStore.emitChange();
             }else{
                 threads[threadObj.id] = threadObj;
-                threads[threadObj.id].members = threadObj.members.map(function(userid){
-                    return UserStore.getById( userid );
-                });
                 threads[threadObj.id].new = true;
                 ThreadStore.emitChange();
             }
@@ -131,12 +146,6 @@ var ThreadStore = merge(EventEmitter.prototype, {
     getById: function (id) {
         return threads[id];
     },
-    // insert:function(t){
-    //     threads[t.id] = t;
-    //     threads[t.id].members = t.members.map(function(userid){
-    //         return UserStore.getById( userid );
-    //     });
-    // },
     deleteById:function (id) {
         delete threads[id];
     },
@@ -177,15 +186,15 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.MSG_RECEIVE:
             switchThread( action.msgObj );
             break;
-        case ChatConstants.Thread_CANCEL:
+        case ChatConstants.THREAD_CANCEL:
             cancelThread( action.id );
             break;
-        case ChatConstants.ADD_THREAD:
-            addThread( action.threadObj );
+        case ChatConstants.CREATE_THREAD:
+            createThread( action.threadObj );
             ThreadStore.emitChange();
             break;
     };
 });
 
-
+window.threadStore = ThreadStore;
 module.exports = ThreadStore;

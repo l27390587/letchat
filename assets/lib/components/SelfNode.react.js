@@ -23,9 +23,10 @@ var SelfNode = React.createClass({
         UserStore.removeChangeListener( this._updateSelfNode );
     },
     render: function() {
+        var avatarSrc = this.state.selfData.avatar && '/img/avatar/' + this.state.selfData.avatar;
         return (
             <div className="self-node" style={this.props.style}>
-                <img className="self-node-avatar" src={this.state.selfData.avatar} onClick = {this.showUser} />
+                <img className="self-node-avatar" src={avatarSrc} onClick = {this.showUser} />
                 <span>{this.state.selfData.alias}</span>
                 <div className="self-node-select">
                 <img className="self-node-thread" src='/img/avatar/thread.png' onClick = {this.selectNode} />
@@ -40,14 +41,13 @@ var SelfNode = React.createClass({
     selectNode:function(e){
         var className = e.target.className.substr(10,16)
         this.props.selectNode(className);
-        // console.log(className);
     },
     showUser:function(){
         Modal.open({
             header: '',
             content: (
                 <div className = 'user-modal'>
-                    <img className="modal-img"  src={this.state.selfData.avatar} />
+                    <img className="modal-img"  src={'/img/avatar/' + this.state.selfData.avatar} />
                     <p className="modal-name">{this.state.selfData.alias}</p>
                 </div>
             ),

@@ -8,24 +8,26 @@ var ChatConstants = require('../constants/ChatConstants');
 var AppAction = require('../actions/AppAction');
 
 var uuid = require('node-uuid');
-var Modal = require('rctui/Modal');
 
+var Modal = require('rctui/Modal');
+var Message = require('rctui/Message')
 var CHANGE_EVENT = 'change';
 
 var UserData = {
 
 };
+var TalkUserData = {
 
+};
 var currentUser = '';
 
-// init
-// UserData.me = {
-//     alias: 'chenllos',
-//     id: 'me',
-//     avatar: '/img/avatar/chenllos.jpg'
-// };
 
-
+function initTalkUserData(serverUsers,threadArray){
+    serverUsers.forEach(function(u){
+        TalkUserData[u.id] = u;
+    });
+    AppAction.msgInit(threadArray);
+}
 function initUserData(serverUsers){
     serverUsers.forEach(function(u){
         UserData[u.id] = u;
@@ -35,14 +37,14 @@ function setCurUser(userId){
     currentUser = userId;
 }
 function watchUser(userId){
-    var nowUser = UserData[userId];
-
-    if(nowUser){
+    var nowUser = UserStore.getById(userId);
+    if(userId == currentUser){
+    }else if(UserData[userId]){
         Modal.open({
             header: '',
             content: (
                 <div className = 'user-modal'>
-                    <img className="modal-img"  src={nowUser.avatar} />
+                    <img className="modal-img"  src={'/img/avatar/' + nowUser.avatar} />
                     <p className="modal-name">{nowUser.alias}</p>
                 </div>
             ),
@@ -55,27 +57,30 @@ function watchUser(userId){
                     newThread.members.push(currentUser);
                     newThread.members.push(userId);
                     newThread.c_time = Date.now();
-                    newThread.name = UserData[currentUser].alias + "-" + nowUser.alias;
-                    AppAction.addThread(newThread);
+                    newThread.name = UserStore.getById(currentUser).alias + "-" + nowUser.alias;
+                    AppAction.createThread(newThread);
                     return true;
-                    // if (suc) {
-                    //     alert(JSON.stringify(form.getValue()))
-                    //     return true
-                    // }
                 }
             }
         })
-    }else {
-        $.get('/userById?user=' + userId, function(result) {
-            // console.log(result);
-            // newThreads[nowTopThread] = result;
-            // newThreads[nowTopThread].flash = true;
-            // for(var i in threads){
-            //     newThreads[i] = threads[i];
-            // }
-            // threads = newThreads;
-            // ThreadStore.emitChange();
-        });
+    }else if (TalkUserData[userId]) {
+        Modal.open({
+            header: '',
+            content: (
+                <div className = 'user-modal'>
+                    <img className="modal-img"  src={'/img/avatar/' + nowUser.avatar} />
+                    <p className="modal-name">{nowUser.alias}</p>
+                </div>
+            ),
+            width: 200,
+            buttons: {
+                '加好友': () => {
+                    AppAction.applyFriend(currentUser,userId);
+                    Message.show("已发送好友请求","success");
+                    return true;
+                }
+            }
+        })
     }
 }
 var UserStore = merge(EventEmitter.prototype, {
@@ -83,7 +88,10 @@ var UserStore = merge(EventEmitter.prototype, {
         return UserData;
     },
     getById: function(id){
-        return (UserData[id] || {});
+        return (UserData[id] || TalkUserData[id] || {});
+    },
+    clear:function(){
+        UserData = {};
     },
     isCurUser: function(id){
         return id === currentUser;
@@ -111,8 +119,18 @@ UserStore.dispatchToken = ChatDispatcher.register(function(payload){
 
     switch(actionType){
         case ChatConstants.APP_INIT:
-            initUserData( action.users );
-            UserStore.emitChange();
+            $.get('/userInit?user=' + UserStore.getCurUser(), function(result) {
+                initUserData( result);
+                UserStore.emitChange();
+            });
+            break;
+        case ChatConstants.TALKUSER_INIT:
+            var talkUserArray = action.talkUserArray;
+            var threadArray = action.threadArray;
+            $.get('/talkUserInit?array=' + talkUserArray, function(result) {
+                initTalkUserData(result,threadArray);
+                UserStore.emitChange();
+            });
             break;
         // 用户登录后触发一下数据更新
         // 按常理应该... 再去fetch数据
@@ -128,5 +146,5 @@ UserStore.dispatchToken = ChatDispatcher.register(function(payload){
 });
 
 
-
+window.userStore = UserStore;
 module.exports = UserStore;

@@ -8,5 +8,9 @@ module.exports = keyMirror({
     MSG_RECEIVE: null,
     Thread_CANCEL: null,
     USER_WATCH:null,
-    ADD_THREAD:null,
+    CREATE_THREAD:null,
+    MSG_INIT:null,
+    TALKUSER_INIT:null,
+    APPLY_FRIEND:null,
+    CONFIRM_FRIEND:null,
 });

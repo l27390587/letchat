@@ -13,7 +13,7 @@ var UserItem = React.createClass({
                 onClick={this.props.itemClick}
                 data-userid={this.props.user.id}
             >
-                <img className="user-list-avatar" src={this.props.user.avatar} onClick = {this.showUser} />
+                <img className="user-list-avatar" src = {'/img/avatar/' + this.props.user.avatar } onClick = {this.showUser} />
                 <span className="user-list-alias">{this.props.user.alias}</span>
             </li>
         );

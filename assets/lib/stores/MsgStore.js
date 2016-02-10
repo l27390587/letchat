@@ -62,11 +62,11 @@ var MsgStore = merge(EventEmitter.prototype, {
 // 注册更多的action handler: CRUD
 ChatDispatcher.register(function(payload){
     var action = payload.action;
-    var text;
 
     switch(action.actionType){
-        case ChatConstants.APP_INIT:
-            ChatDispatcher.waitFor([ThreadStore.dispatchToken]);
+        case ChatConstants.MSG_INIT:
+            var threadArray = action.threadArray;
+            // console.log(threadArray);
             $.get('/msgInit', function(result) {
                 // console.log(result.length);
                 _dataHandler.init(result);

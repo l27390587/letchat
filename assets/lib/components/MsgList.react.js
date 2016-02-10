@@ -50,7 +50,6 @@ var MsgList = React.createClass({
         this._scrollToBottom();
     },
     render: function() {
-        // console.log(this.state.msgData);
         var msgItems = [];
         for(var i in this.state.msgData){
             var msg = this.state.msgData[i];
@@ -61,7 +60,7 @@ var MsgList = React.createClass({
 
             var node = (
                 <li className={classNameArr.join(' ')} key={i} data-userid={msg.user.id} >
-                    <img className="msg-user-avatar" src={msg.user.avatar} onClick = {this.showUser} />
+                    <img className="msg-user-avatar" src={ '/img/avatar/' + msg.user.avatar} onClick = {this.showUser} />
                     <div className="msg-content-ctn">
                         <p className="msg-user-name">{msg.user.alias}</p>
                         <p className="msg-text">{msg.text}</p>
