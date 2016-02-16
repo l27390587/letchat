@@ -29,4 +29,19 @@ UserSecret.login = function (uid,password,cb){
         }
     });
 }
+UserSecret.addFriend = function (uid1,uid2,cb){
+    userSecretModel.findOne({id:uid1}, function(err, doc) {
+        doc.friends[doc.friends.length] = uid2;
+        doc.markModified('friends');
+        doc.save(function(err){
+            userSecretModel.findOne({id:uid2}, function(err, doc) {
+                doc.friends[doc.friends.length] = uid1;
+                doc.markModified('friends');
+                doc.save(function(err,doc){
+                    console.log(doc);
+                });
+            })
+        });
+    });
+}
 module.exports = UserSecret;

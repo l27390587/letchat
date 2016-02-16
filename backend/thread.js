@@ -21,6 +21,15 @@ Thread.getById = function (tid,cb){
         }
     })
 }
+Thread.deleteById = function (tid,cb){
+    threadModel.remove({id:tid},function(err,doc){
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    })
+}
 Thread.getByMember = function (uid,cb){
     threadModel.find({members:uid},function(err,doc){
         if (err) {
@@ -39,5 +48,5 @@ Thread.add = function (threadObj,cb){
         }
     });
 }
-// Thread.getByMember('805487b4-bda8-4540-9a5c-182047c039ae');
+
 module.exports = Thread;

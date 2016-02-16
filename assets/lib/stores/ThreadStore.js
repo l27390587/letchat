@@ -8,6 +8,8 @@ var AppAction = require('../actions/AppAction');
 var ChatDispatcher = require('../dispatcher/ChatDispatcher');
 var ChatConstants = require('../constants/ChatConstants');
 
+var Modal = require('rctui/Modal');
+
 var UserStore = require('./UserStore');
 
 var CHANGE_EVENT = 'change';
@@ -17,7 +19,7 @@ var threads = {};
 var curThread = '';
 
 
-
+//去重函数
 function cancelDubble(array){
     var noDubbleTalkUser = [];
     array.sort();
@@ -54,8 +56,33 @@ function initThreadData(serverThreads){
     AppAction.talkUserInit(noDubbleTalkUser,threadArray);
 }
 function changeThread(newId){
-    curThread = newId;
+
     ThreadStore.getById(newId).flash = false;
+    if(ThreadStore.getById(newId).members.length == 1){
+        Modal.open({
+            content:ThreadStore.getById(newId).name,
+            width: 200,
+            buttons: {
+                '拒绝': () => {
+                    AppAction.confirmFriend(newId,'n');
+                    ThreadStore.deleteById(newId);
+                    ThreadStore.emitChange();
+                    return true;
+
+                },
+                '接受':() =>{
+                    AppAction.confirmFriend(newId,'y');
+                    ThreadStore.deleteById(newId);
+                    ThreadStore.emitChange();
+                    return true;
+                }
+            }
+        })
+    }else{
+        curThread = newId;
+        ThreadStore.emitChange();
+    }
+
 }
 function letTopThread(msgObj){
     var newThreads = {},
@@ -71,7 +98,7 @@ function letTopThread(msgObj){
     threads = newThreads;
     ThreadStore.emitChange();
 }
-function switchThread(msgObj){
+function msgReceive(msgObj){
     var newThreads = {},
         nowTopThread = msgObj.thread;
     if(threads[nowTopThread]){
@@ -102,7 +129,22 @@ function switchThread(msgObj){
         });
     }
 }
+function infReceive(thread){
+    var newThreads = {},
+        nowTopThread = thread.id;
+    newThreads[nowTopThread] = thread;
+    newThreads[nowTopThread].flash = true;
 
+    for(var i in threads){
+        if(nowTopThread == i){
+            continue;
+        }
+        newThreads[i] = threads[i];
+    }
+
+    threads = newThreads;
+    ThreadStore.emitChange();
+}
 function cancelThread(tid){
     ThreadStore.deleteById(tid);
     for(var i in threads){
@@ -178,13 +220,15 @@ ThreadStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.CHANGE_THREAD:
             // if()  // 检查是否是可用的uuid?
             changeThread( action.newId );
-            ThreadStore.emitChange();
             break;
         case ChatConstants.MSG_CREATE:
             letTopThread( action.msgObj );
             break;
         case ChatConstants.MSG_RECEIVE:
-            switchThread( action.msgObj );
+            msgReceive( action.msgObj );
+            break;
+        case ChatConstants.INF_RECEIVE:
+            infReceive( action.thread );
             break;
         case ChatConstants.THREAD_CANCEL:
             cancelThread( action.id );

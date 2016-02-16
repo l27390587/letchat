@@ -41,9 +41,11 @@ var AppAction = {
             beApplyed:str2,
         });
     },
-    confirmFriend:function(){
+    confirmFriend:function(tid,str){
         ChatDispatcher.handleViewAction({
             actionType: ChatlConstants.CONFIRM_FRIEND,
+            thread:tid,
+            confirm:str,
         });
     },
     // --------------- thread ---------------
@@ -83,6 +85,12 @@ var AppAction = {
         ChatDispatcher.handlerServerAction({
             actionType: ChatlConstants.MSG_RECEIVE,
             msgObj: msgObj
+        });
+    },
+    receiveInf: function(thread){
+        ChatDispatcher.handlerServerAction({
+            actionType: ChatlConstants.INF_RECEIVE,
+            thread: thread
         });
     },
     msgInit: function(threadArray){

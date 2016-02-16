@@ -58,4 +58,4 @@ server.listen(port, function(){
 
 
 var socketChat = require('./backend/socketChat');
-socketChat(server,msg,thread,user,session_store);
+socketChat(server,msg,thread,user,userSecret,session_store);

@@ -1,10 +1,12 @@
 var socketIO = require('socket.io');
 var cookie = require('cookie-parser/node_modules/cookie');
 var cookieParser = require('cookie-parser');
+var uuid = require('node-uuid');
 var io = null,
     msg = null,
     thread = null,
     user = null,
+    userSecret = null,
     session_store = null;
 
 var sockets = {};
@@ -31,6 +33,44 @@ function bind(){
             handler.receiveAndBroadCast(socket, data ,userId);
         });
 
+        socket.on('applyFriend', function(data){
+            var newThread = {};
+            newThread.id = uuid.v4();
+            newThread.members = [];
+            newThread.members.push(data.beApplyed);
+            newThread.describe = data.applyer;
+            newThread.c_time = Date.now();
+            user.getById(data.applyer,function(doc){
+                newThread.name = '来自' + doc.alias + '的好友请求';
+                thread.add(newThread,function(doc){
+                    if(sockets[data.beApplyed]){
+                        sockets[data.beApplyed].emit('applyFriend-others',newThread);
+                    }
+                })
+            })
+
+        });
+
+
+        socket.on('confirmFriend', function(data){
+            var tid = data.threadId;
+
+            // thread.deleteById(tid,function(doc){
+                if(data.confirm == 'y'){
+                    thread.getById(tid,function(doc){
+                        var str1 = doc.describe,
+                            str2 = doc.members[0];
+                        userSecret.addFriend(str1,str2,function(doc){
+
+                        });
+                    })
+                }else if (data.confirm == 'n') {
+
+                }
+            // })
+        });
+
+
         socket.on('disconnect', function(){
             delete sockets[userId];
             log('a user logged out...')
@@ -49,15 +89,15 @@ var handler = {
         if( timeDis < 0 || timeDis > 60*1000 ){
             msgObj.time = serverTime;
         }
-        
+
         if(msgObj.newThread){
             //规范newthread格式以save
             var newThread = msgObj.newThread;
-            var newThreadMember = [];
-            newThread.members.forEach(function(t){
-                newThreadMember.push(t.id);
-            })
-            newThread.members = newThreadMember;
+            // var newThreadMember = [];
+            // newThread.members.forEach(function(t){
+            //     newThreadMember.push(t.id);
+            // })
+            // newThread.members = newThreadMember;
             delete  newThread.flash;
 
             //修正创建thread时间
@@ -72,10 +112,10 @@ var handler = {
                 storeMsg.save();
                 // save to db...
 
-                newThreadMember.forEach(function(item){
+                newThread.members.forEach(function(item){
                     if(sockets[item]&&item!=mySelf){
                         sockets[item].emit('msg-others', msgObj);
-                    }    
+                    }
                 })
                 //转播给对应thread的所有在线user
             })
@@ -87,7 +127,7 @@ var handler = {
                 doc.members.forEach(function(item){
                     if(sockets[item]&&item!=mySelf){
                         sockets[item].emit('msg-others', msgObj);
-                    }    
+                    }
                 })
             })
             //转播给对应thread的所有在线user
@@ -96,11 +136,12 @@ var handler = {
     }
 }
 
-module.exports = function(server,_msg,_thread,_user,_session_store){
+module.exports = function(server,_msg,_thread,_user,_userSecret,_session_store){
     io = socketIO(server);
     msg = _msg;
     thread = _thread;
     user = _user;
+    userSecret = _userSecret;
     session_store = _session_store;
     bind();
 }

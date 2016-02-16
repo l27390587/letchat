@@ -3,18 +3,9 @@ var gutil = require('gulp-util');
 var plumber = require('gulp-plumber');
 var liveReload = require('gulp-livereload');
 var uglify = require('gulp-uglify');
-var cond = require('gulp-cond');
-
-var source = require('vinyl-source-stream');
-var browserify = require('browserify');
-
-var gbro = require('gulp-browserify');
-var reactify = require('reactify');
-var envify = require('envify');
 
 var webpack = require('webpack')
 var webpackConfig = require('./webpack.config.js')
-var gutil = require("gulp-util");
 
 var rename = require('gulp-rename');
 var less = require('gulp-less');
@@ -53,25 +44,6 @@ gulp.task('webpack', function(callback) {
     });
 });
 
-gulp.task('bundle-gulp-browserify', function(){
-    gulp.src('./assets/lib/app.js')
-        .pipe(plumber({errorHandler: errHandler}))
-        .pipe(gbro({
-            transform: [reactify, envify],
-            debug: !proEnv
-        }))
-        .pipe(rename('bundle.js'))
-        .pipe(gulp.dest('./assets/lib'));
-
-    // gulp.src('./assets/lib/demoModule/login.js')
-    //     .pipe(plumber({errorHandler: errHandler}))
-    //     .pipe(gbro({
-    //         // transform: [reactify, envify],
-    //         debug: !proEnv
-    //     }))
-    //     .pipe(rename('loginModule.js'))
-    //     .pipe(gulp.dest('./assets/lib'));
-});
 
 gulp.task('less', function(){
     gulp.src('assets/layout/less/layout.less')

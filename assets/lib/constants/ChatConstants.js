@@ -13,4 +13,5 @@ module.exports = keyMirror({
     TALKUSER_INIT:null,
     APPLY_FRIEND:null,
     CONFIRM_FRIEND:null,
+    INF_RECEIVE:null,
 });
