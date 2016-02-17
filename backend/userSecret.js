@@ -38,7 +38,7 @@ UserSecret.addFriend = function (uid1,uid2,cb){
                 doc.friends[doc.friends.length] = uid1;
                 doc.markModified('friends');
                 doc.save(function(err,doc){
-                    console.log(doc);
+                    cb(doc);
                 });
             })
         });

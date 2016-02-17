@@ -33,7 +33,12 @@ function bind(){
     })
     app.get('/talkUserInit', function(req, res){
         var friendArray = req.query.array;
-        friendArray = friendArray.split(',');
+        if(friendArray){
+            friendArray = friendArray.split(',');
+        }else{
+            friendArray = [];
+            friendArray.push(req.session.user);
+        }
         user.getByIdArray(friendArray,function(doc){
             res.json(doc);
         })

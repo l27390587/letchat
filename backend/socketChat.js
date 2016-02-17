@@ -54,20 +54,44 @@ function bind(){
 
         socket.on('confirmFriend', function(data){
             var tid = data.threadId;
-
-            // thread.deleteById(tid,function(doc){
-                if(data.confirm == 'y'){
-                    thread.getById(tid,function(doc){
-                        var str1 = doc.describe,
-                            str2 = doc.members[0];
-                        userSecret.addFriend(str1,str2,function(doc){
-
-                        });
+            if(data.confirm == 'y'){
+                thread.getById(tid,function(doc){
+                    var str1 = doc.describe,//发起者
+                        str2 = doc.members[0];//被添加者
+                    userSecret.addFriend(str1,str2,function(doc){
+                        thread.deleteById(tid,function(doc){
+                            user.getById(str2,function(doc){
+                                if(sockets[str1]){
+                                    var obj = {};
+                                    obj.beApplyed = doc;
+                                    sockets[str1].emit('confirmFriend-others',obj);
+                                }
+                            })
+                            user.getById(str1,function(doc){
+                                if(sockets[str2]){
+                                    var obj = {};
+                                    obj.applyer = doc;
+                                    sockets[str2].emit('confirmFriend-others',obj);
+                                }
+                            })
+                        })
+                    });
+                })
+            }else if (data.confirm == 'n') {
+                thread.getById(tid,function(doc){
+                    var str1 = doc.describe,//发起者
+                        str2 = doc.members[0];//被添加者
+                    thread.deleteById(tid,function(doc){
+                        user.getById(str2,function(doc){
+                            if(sockets[str1]){
+                                var obj = {};
+                                obj.deny = doc;
+                                sockets[str1].emit('confirmFriend-others',obj);
+                            }
+                        })
                     })
-                }else if (data.confirm == 'n') {
-
-                }
-            // })
+                })
+            }
         });
 
 

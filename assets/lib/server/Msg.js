@@ -33,9 +33,9 @@ function bind(){
     _socket.on('applyFriend-others', function(thread){
         AppAction.receiveInf(thread);
     });
-    // _socket.on('confirmFriend-others', function(thread){
-    //     AppAction.receiveInf(thread);
-    // });
+    _socket.on('confirmFriend-others', function(obj){
+        AppAction.receiveCon(obj);
+    });
 }
 
 
@@ -61,6 +61,7 @@ ChatDispatcher.register(function(payload){
                 }
             }
             break;
+
 
         case ChatConstants.APPLY_FRIEND:
             var applyer = action.applyer,

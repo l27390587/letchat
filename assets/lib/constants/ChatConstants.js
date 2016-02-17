@@ -14,4 +14,5 @@ module.exports = keyMirror({
     APPLY_FRIEND:null,
     CONFIRM_FRIEND:null,
     INF_RECEIVE:null,
+    CON_RECEIVE:null,
 });

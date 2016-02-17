@@ -36,6 +36,17 @@ function initUserData(serverUsers){
 function setCurUser(userId){
     currentUser = userId;
 }
+function confirmReceive(obj){
+    if(obj.beApplyed){
+        UserData[obj.beApplyed.id] = obj.beApplyed;
+        Message.show( obj.beApplyed.alias + "接受了你的好友请求","success");
+    }else if (obj.applyer) {
+        UserData[obj.applyer.id] = obj.applyer;
+        Message.show("添加好友成功","success");
+    }else if (obj.deny){
+        Message.show( obj.deny.alias + "拒绝了你的好友请求","warning");
+    }
+}
 function watchUser(userId){
     var nowUser = UserStore.getById(userId);
     if(userId == currentUser){
@@ -141,6 +152,10 @@ UserStore.dispatchToken = ChatDispatcher.register(function(payload){
         case ChatConstants.USER_WATCH:
             watchUser(action.userId);
             // UserStore.emitChange();
+            break;
+        case ChatConstants.CON_RECEIVE:
+            confirmReceive(action.obj);
+            UserStore.emitChange();
             break;
     };
 });

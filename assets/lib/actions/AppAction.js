@@ -93,6 +93,12 @@ var AppAction = {
             thread: thread
         });
     },
+    receiveCon: function(obj){
+        ChatDispatcher.handlerServerAction({
+            actionType: ChatlConstants.CON_RECEIVE,
+            obj: obj
+        });
+    },
     msgInit: function(threadArray){
         ChatDispatcher.handleViewAction({
             actionType: ChatlConstants.MSG_INIT,
