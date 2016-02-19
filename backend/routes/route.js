@@ -84,6 +84,33 @@ function bind(){
             res.json(doc);
         })
     })
+    app.get('/serachFriend', function(req, res){
+        var str = req.query.str,
+            result = [];
+        var flag = 0;
+        user.getById(str,function(doc){
+            if(doc){
+                result[result.length] = doc;
+                flag = 1;
+            }
+            user.getByAlias(str,function(doc){
+                if(doc){
+                    if(flag){
+                        var array = [];
+                        doc.forEach(function(item){
+                            if(item.id != str){
+                                array.push(item);
+                            }
+                        })
+                        result = result.concat(array);
+                    }else {
+                        result = result.concat(doc);
+                    }
+                }
+                res.json(result);
+            })
+        })
+    })
     app.get('/emitMessage', function(req, res){
         var id = req.query.username;
         user.getById(id,function(doc){

@@ -30,7 +30,7 @@ User.getByIdArray = function (friendArray,cb){
     })
 }
 User.getByAlias = function (_alias,cb){
-    userModel.findOne({alias:_alias},function(err,doc){
+    userModel.find({alias:_alias},function(err,doc){
         if (err) {
             console.log(err);
         } else {

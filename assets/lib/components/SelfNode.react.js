@@ -31,6 +31,7 @@ var SelfNode = React.createClass({
                 <div className="self-node-select">
                 <img className="self-node-thread" src='/img/avatar/thread.png' onClick = {this.selectNode} />
                 <img className="self-node-friend" src='/img/avatar/friend.png' onClick = {this.selectNode} />
+                <img className="self-node-select" src='/img/avatar/friend.png' onClick = {this.selectNode} />
                 </div>
             </div>
         );

@@ -23,6 +23,7 @@ var Resizeable = require('./Resizeable.react');
 var SelfNode = require('./SelfNode.react')
 var ThreadList = require('./ThreadList.react');
 var FriendList = require('./UserList.react');
+var SelectList = require('./SelectList.react');
 var Dialog = require('./MsgList.react');
 var Compose = require('./Compose.react');
 
@@ -41,7 +42,8 @@ var ChatApp = React.createClass({
             dialogH: 350,
             composeH: 150,
             thread:'block',
-            friend:'none'
+            friend:'none',
+            select:'none'
         }
     },
     responseToResize: function(){
@@ -64,7 +66,6 @@ var ChatApp = React.createClass({
         // these coms style should be set by ChatApp Component
         // and should response to Resizeable's resize
         var selfNodeStyle = {
-            float: 'left',
             width: this.state.threadW + 'px'
         };
         var threadStyle = {
@@ -76,6 +77,11 @@ var ChatApp = React.createClass({
             float: 'left',
             width: this.state.threadW + 'px',
             display:this.state.friend
+        };
+        var selectStyle = {
+            float: 'left',
+            width: this.state.threadW + 'px',
+            display:this.state.select
         };
         var dialogStyle = {
             marginLeft: this.state.threadW + 'px',
@@ -91,6 +97,7 @@ var ChatApp = React.createClass({
                 selfNode = {<SelfNode style={selfNodeStyle} selectNode = {this._selectNode}/>}
                 verLeftThreadNode={<ThreadList style={threadStyle}/>}
                 verLeftFriendNode={<FriendList style={friendStyle}/>}
+                verLeftSelectNode={<SelectList style={selectStyle}/>}
                 horTopNode={<Dialog style={dialogStyle} />}
                 horBottomNode={<Compose style={compostStyle} textsHandler={this._sendMsg}/>}
 
@@ -109,9 +116,15 @@ var ChatApp = React.createClass({
         if(className == 'thread'){
             this.setState({thread: 'block'});
             this.setState({friend: 'none'});
+            this.setState({select: 'none'});
         }else if (className == 'friend') {
             this.setState({thread: 'none'});
             this.setState({friend: 'block'});
+            this.setState({select: 'none'});
+        }else if (className == 'select') {
+            this.setState({thread: 'none'});
+            this.setState({friend: 'none'});
+            this.setState({select: 'block'});
         }
     },
     _resizeVerValidate: function(lw, rw){

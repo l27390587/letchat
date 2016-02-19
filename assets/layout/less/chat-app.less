@@ -62,12 +62,14 @@
 
     }
 }
-.user-list{
+.user-list,.select-list{
     height: 100%;
     margin:0;
     padding: 0;
     padding-top: @selfNodeHeight;
-    clear: both;
+    list-style: none;
+
+    background-color: #f0f0f0;
     .user-item{
         padding: 0;
         color: #666;
@@ -88,6 +90,31 @@
         }
     }
 }
+.select-list{
+    .serachBar{
+        width:100%;
+        height:30px;
+        padding: 0 15px;
+        background: #2d2d2d; /* browsers that don't support rgba */
+        background: rgba(45,45,45,.15);
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        border: 1px solid #3d3d3d; /* browsers that don't support rgba */
+        border: 1px solid rgba(255,255,255,.15);
+        -moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+        -webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,.1) inset;
+        font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: black;
+        text-shadow: 0 1px 2px rgba(0,0,0,.1);
+        -o-transition: all .2s;
+        -moz-transition: all .2s;
+        -webkit-transition: all .2s;
+        -ms-transition: all .2s;
+    }
+}
 .self-node{
     height:@selfNodeHeight;
     position: absolute;
@@ -99,8 +126,8 @@
     .self-node-select{
         height: 35px;
         // border: 1px solid black;
-        .self-node-thread,.self-node-friend{
-            width: 50%;
+        .self-node-thread,.self-node-friend,.self-node-select{
+            width: 33.3%;
             height: 100%;
         }
     }

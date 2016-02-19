@@ -10,7 +10,7 @@ var AppAction = require('../actions/AppAction');
 var uuid = require('node-uuid');
 
 var Modal = require('rctui/Modal');
-var Message = require('rctui/Message')
+var Message = require('rctui/Message');
 var CHANGE_EVENT = 'change';
 
 var UserData = {
@@ -119,7 +119,12 @@ var UserStore = merge(EventEmitter.prototype, {
     removeChangeListener: function(cb){
         this.removeListener(CHANGE_EVENT, cb);
     },
-
+    //-----------------------
+    addTalkUser:function(array){
+        array.forEach(function(obj){
+            TalkUserData[obj.id] = obj;
+        })
+    },
     // 处理action的句柄
     dispatchToken: null
 });
