@@ -10,6 +10,9 @@ var UserStore = require('../stores/UserStore');
 
 var UserItem = require('./UserItem.react');
 
+var AddAllTalkItem = require('./AddAllTalkItem.react');
+
+var Modal = require('rctui/Modal');
 // function
 
 var UserList = React.createClass({
@@ -37,6 +40,9 @@ var UserList = React.createClass({
         }
         return (
             <ul className="user-list" style={this.props.style}>
+                <button type="button" className="qunliao  btn btn-success" onClick={this._qunliao}>
+                    <span className="glyphicon glyphicon-plus" aria-hidden="true" >发起群聊</span>
+                </button>
                 {nodes}
             </ul>
         );
@@ -45,6 +51,30 @@ var UserList = React.createClass({
         this.setState({
             users: UserStore.getAll()
         });
+    },
+    _qunliao:function(){
+        var nodes = [];
+        for(var i in this.state.users){
+            var user = this.state.users[i];
+            nodes.push( <AddAllTalkItem
+                user={user}
+                itemClick={this.userDetails}
+                key={i}
+            /> );
+        }
+        Modal.open({
+            content: (
+                <ul className="addAllTalk-user-list" >
+                    {nodes}
+                </ul>
+            ),
+            buttons: {
+                '拒绝': () => {
+                },
+                '接受':() =>{
+                }
+            }
+        })
     },
     userDetails: function(e){
         var item = e.target;

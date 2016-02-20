@@ -29,9 +29,10 @@ var SelfNode = React.createClass({
                 <img className="self-node-avatar" src={avatarSrc} onClick = {this.showUser} />
                 <span>{this.state.selfData.alias}</span>
                 <div className="self-node-select">
-                <img className="self-node-thread" src='/img/avatar/thread.png' onClick = {this.selectNode} />
-                <img className="self-node-friend" src='/img/avatar/friend.png' onClick = {this.selectNode} />
-                <img className="self-node-select" src='/img/avatar/friend.png' onClick = {this.selectNode} />
+
+                 <span className="self-node-thread glyphicon glyphicon-list" aria-hidden="true" onClick = {this.selectNode}></span>
+                 <span className="self-node-friend glyphicon glyphicon-user" aria-hidden="true" onClick = {this.selectNode}></span>
+                 <span className="self-node-select glyphicon glyphicon-search" aria-hidden="true" onClick = {this.selectNode}></span>
                 </div>
             </div>
         );
@@ -40,7 +41,8 @@ var SelfNode = React.createClass({
         this.setState( getSelfNode() );
     },
     selectNode:function(e){
-        var className = e.target.className.substr(10,16)
+        var className = e.target.className.substr(10,6);
+        console.log(className);
         this.props.selectNode(className);
     },
     showUser:function(){
