@@ -8,11 +8,14 @@ var AppAction = require('../actions/AppAction');
 
 var UserStore = require('../stores/UserStore');
 
+var uuid = require('node-uuid');
+
 var UserItem = require('./UserItem.react');
 
 var AddAllTalkItem = require('./AddAllTalkItem.react');
 
 var Modal = require('rctui/Modal');
+var Message = require('rctui/Message');
 // function
 
 var UserList = React.createClass({
@@ -40,7 +43,7 @@ var UserList = React.createClass({
         }
         return (
             <ul className="user-list" style={this.props.style}>
-                <button type="button" className="qunliao  btn btn-success" onClick={this._qunliao}>
+                <button type="button" className="qunliao  btn btn-primary" onClick={this._qunliao}>
                     <span className="glyphicon glyphicon-plus" aria-hidden="true" >发起群聊</span>
                 </button>
                 {nodes}
@@ -58,7 +61,6 @@ var UserList = React.createClass({
             var user = this.state.users[i];
             nodes.push( <AddAllTalkItem
                 user={user}
-                itemClick={this.userDetails}
                 key={i}
             /> );
         }
@@ -66,25 +68,48 @@ var UserList = React.createClass({
             content: (
                 <ul className="addAllTalk-user-list" >
                     {nodes}
+                    <input type="text" className="form-control qunliaoName" placeholder="输入群聊名称" />
                 </ul>
             ),
             buttons: {
-                '拒绝': () => {
+                '取消': () => {
+                    return true;
                 },
-                '接受':() =>{
+                '发起群聊':() =>{
+                    var btns = $(".rct-modal-content .addAllTalk-user-list button"),
+                        array = [],
+                        name = $(".rct-modal-content .addAllTalk-user-list .qunliaoName")[0].value;
+                    array.push(_uid);
+                    for(var i = 0 ;i<btns.length;i++){
+                        if($(btns[i]).hasClass("btn-success")){
+                            array.push(btns[i].dataset['userid']);
+                        }
+                    }
+                    if(array.length < 3 ){
+                        Message.show( "群聊...选中两个以上的好友才叫群聊","warning");
+                    }else if(!name){
+                        Message.show( "给你的群聊取一个名字","warning");
+                        $(".rct-modal-content .addAllTalk-user-list .qunliaoName").focus();
+                    }else{
+                        var newThread = {};
+                        newThread.id = uuid.v4();
+                        newThread.name = name;
+                        newThread.members = array;
+                        newThread.c_time = Date.now().toString();
+                        newThread.qun = true;
+                        AppAction.createThread(newThread);
+                        return true;
+                    }
+
+
                 }
             }
         })
     },
     userDetails: function(e){
-        var item = e.target;
-        var userId ;
-        if(item.nodeName == 'LI' ){
-            userId = item.dataset['userid'];
-        }else{
-            userId = item.parentNode.dataset['userid'];
-        }
-        // console.log(userId);
+        var item = e.currentTarget;
+        var userId = item.dataset['userid'];
+
         AppAction.userWatch( userId );
     }
 

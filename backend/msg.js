@@ -25,7 +25,14 @@ Msg.prototype.save = function() {
     });
 }
 Msg.getAll = function (cb){
-    msgModel.find(function(err,doc){
+    // msgModel.find(function(err,doc){
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         cb(doc);
+    //     }
+    // })
+    msgModel.find().sort({'time':'asc'}).exec(function(err,doc){
         if (err) {
             console.log(err);
         } else {

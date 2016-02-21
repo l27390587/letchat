@@ -39,7 +39,7 @@ function bind(){
             newThread.members = [];
             newThread.members.push(data.beApplyed);
             newThread.describe = data.applyer;
-            newThread.c_time = Date.now();
+            newThread.c_time = Date.now().toString();
             user.getById(data.applyer,function(doc){
                 newThread.name = '来自' + doc.alias + '的好友请求';
                 thread.add(newThread,function(doc){
@@ -107,7 +107,7 @@ var handler = {
     receiveAndBroadCast: function(socket, msgObj ,mySelf){
         // log(msgObj);
         // 时间修正... 有必要吗
-        var serverTime = Date.now();
+        var serverTime = Date.now().toString();
         //修正创建msg时间
         var timeDis = serverTime - msgObj.time;
         if( timeDis < 0 || timeDis > 60*1000 ){

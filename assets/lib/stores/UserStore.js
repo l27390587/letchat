@@ -64,11 +64,12 @@ function watchUser(userId){
                 '发消息': () => {
                     var newThread = {};
                     newThread.id = uuid.v4();
+                    newThread.name = UserStore.getById(currentUser).alias + "-" + nowUser.alias;
                     newThread.members = [];
                     newThread.members.push(currentUser);
                     newThread.members.push(userId);
-                    newThread.c_time = Date.now();
-                    newThread.name = UserStore.getById(currentUser).alias + "-" + nowUser.alias;
+                    newThread.c_time = Date.now().toString();
+                    newThread.qun = false;
                     AppAction.createThread(newThread);
                     return true;
                 }

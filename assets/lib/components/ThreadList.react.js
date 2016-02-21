@@ -8,6 +8,8 @@ var AppAction = require('../actions/AppAction');
 
 var ThreadStore = require('../stores/ThreadStore');
 
+var UserStore = require('../stores/UserStore');
+
 var ThreadItem = require('./ThreadItem.react');
 
 // function
@@ -20,9 +22,11 @@ var ThreadList = React.createClass({
     },
     componentDidMount: function() {
         ThreadStore.addChangeListener(this._changeHandler);
+        UserStore.addChangeListener(this._changeHandler);
     },
     componentWillUnmount: function() {
         ThreadStore.removeChangeListener(this._changeHandler);
+        UserStore.removeChangeListener(this._changeHandler);
     },
     render: function() {
         var curThread = ThreadStore.getCurThread();

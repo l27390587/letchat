@@ -14,7 +14,8 @@ var threadSchema = new Schema({
     name: String,
     describe: String,
     members: Array,
-    c_time: String
+    c_time: String,
+    qun:Boolean
 });
 mongoose.model('Thread', threadSchema);
 var msgSchema = new Schema({

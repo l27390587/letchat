@@ -70,7 +70,7 @@ var AppAction = {
                 text: text,
                 user: userId,
                 thread: threadId,
-                time: Date.now()
+                time: Date.now().toString()
             }
         })
     },

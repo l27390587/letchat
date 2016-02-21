@@ -1,10 +1,10 @@
 var mongoose = require("mongoose");
-// require("./db.js");
+require("./db.js");
 var threadModel = mongoose.model('Thread');
 function Thread(obj) {
 }
 Thread.getAll = function (cb){
-    threadModel.find(function(err,doc){
+    threadModel.find().sort({'c_time':'desc'}).exec(function(err,doc){
         if (err) {
             console.log(err);
         } else {
@@ -31,7 +31,7 @@ Thread.deleteById = function (tid,cb){
     })
 }
 Thread.getByMember = function (uid,cb){
-    threadModel.find({members:uid},function(err,doc){
+    threadModel.find({members:uid}).sort({'c_time':'desc'}).exec(function(err,doc){
         if (err) {
             console.log(err);
         } else {
@@ -48,5 +48,4 @@ Thread.add = function (threadObj,cb){
         }
     });
 }
-
 module.exports = Thread;

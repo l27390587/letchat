@@ -156,26 +156,33 @@ function cancelThread(tid){
 }
 
 function createThread (threadObj){
-    var existFlag = 0 ;
-    //此处可能有BUG
-    for(var i in threads){
-        if(threadObj.members.toString() == threads[i].members.toString() || threadObj.members.toString() == threads[i].members.reverse().toString() ){
-            existFlag = 1;
+    if(threadObj.qun){
+        threads[threadObj.id] = threadObj;
+        threads[threadObj.id].new = true;
+        ThreadStore.emitChange();
+    }else {
+        var existFlag = 0 ;
+        //此处可能有BUG
+        for(var i in threads){
+            if(threadObj.members.toString() == threads[i].members.toString() || threadObj.members.toString() == threads[i].members.reverse().toString() ){
+                existFlag = 1;
+            }
+        }
+        if(!existFlag){
+            $.get('/threadByMember?user=' + threadObj.members, function(result) {
+                // console.log(result);
+                if(result){
+                    threads[result.id] = result;
+                    ThreadStore.emitChange();
+                }else{
+                    threads[threadObj.id] = threadObj;
+                    threads[threadObj.id].new = true;
+                    ThreadStore.emitChange();
+                }
+            });
         }
     }
-    if(!existFlag){
-        $.get('/threadByMember?user=' + threadObj.members, function(result) {
-            // console.log(result);
-            if(result){
-                threads[result.id] = result;
-                ThreadStore.emitChange();
-            }else{
-                threads[threadObj.id] = threadObj;
-                threads[threadObj.id].new = true;
-                ThreadStore.emitChange();
-            }
-        });
-    }
+
 }
 // exports出去的 只有get  没有set
 var ThreadStore = merge(EventEmitter.prototype, {
