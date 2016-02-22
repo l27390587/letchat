@@ -98,7 +98,7 @@ function watchUser(userId){
                     <p className="modal-name">{nowUser.alias}</p>
                 </div>
             ),
-            width: 200,
+            width: 250,
             buttons: {
                 '加好友': () => {
                     AppAction.applyFriend(currentUser,userId);

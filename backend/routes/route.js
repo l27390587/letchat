@@ -158,8 +158,8 @@ function bind(){
                 var userObj = {
                     id : req.body.username,
                     alias : req.body.username,
-                    avatar : '',
-                    mail : 'default.jpg'
+                    avatar : 'default.jpg',
+                    mail : ''
                 }
                 user.add(userObj,function(doc){
                         req.session.user = username;
