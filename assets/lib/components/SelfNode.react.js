@@ -42,7 +42,6 @@ var SelfNode = React.createClass({
     },
     selectNode:function(e){
         var className = e.target.className.substr(10,6);
-        console.log(className);
         this.props.selectNode(className);
     },
     showUser:function(){
@@ -54,7 +53,7 @@ var SelfNode = React.createClass({
                     <p className="modal-name">{this.state.selfData.alias}</p>
                 </div>
             ),
-            width: 200,
+            width: 250,
             buttons: {
                 '注销': () => {
                     window.location.href="/logout";

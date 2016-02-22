@@ -3,6 +3,7 @@ block head
     title login
     link(rel="stylesheet", href="layout/css/layout.css")
     link(rel="stylesheet", href="layout/css/supersized.css")
+    link(rel="stylesheet", href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css")
     meta(name="viewport", content="width=device-width, initial-scale=1.0") 
 block body
     #login-module.full-module.active
@@ -12,8 +13,12 @@ block body
                 img.avatar(src="/img/avatar/default.jpg")
             .form#login-form
                 //- input#alias-input(type="text", placeholder="alias, more than 2 chars")
-                input#username(type="text")
-                input#password(type="text")
+                input#username(type="text" placeholder="帐号")
+                input#password(type="text" placeholder="密码")
+                
+                
+                a(class="btn " href='/register') 注册账号
+                a(class="btn text-muted" href='') 找回密码
                 a#login-btn.btn.btn-primary.btn-block.disabled(href="#") Login
 
     style.

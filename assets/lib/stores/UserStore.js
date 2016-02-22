@@ -59,8 +59,22 @@ function watchUser(userId){
                     <p className="modal-name">{nowUser.alias}</p>
                 </div>
             ),
-            width: 200,
+            width: 250,
             buttons: {
+                // '删好友': () => {
+                //     Modal.open({
+                //         content: 'sure？',
+                //         width: 200,
+                //         buttons: {
+                //             '确认': () => {
+                //                 return true;
+                //             },
+                //             '取消': () => {
+                //                 return true;
+                //             }
+                //         }
+                //     })
+                // },
                 '发消息': () => {
                     var newThread = {};
                     newThread.id = uuid.v4();
