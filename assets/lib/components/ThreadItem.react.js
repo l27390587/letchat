@@ -13,7 +13,9 @@ var ThreadItem = React.createClass({
         });
         var name ;
         if(this.props.thread.qun){
-            name = this.props.thread.name
+            name = this.props.thread.name;
+        }else if (this.props.thread.describe) {
+            name = this.props.thread.name;
         }else {
             this.props.thread.members.forEach(function(item){
                 if(item != _uid){

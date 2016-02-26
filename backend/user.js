@@ -47,4 +47,13 @@ User.add = function (userObj,cb){
         }
     });
 }
+User.uploadAvatar = function (uid,base64,cb){
+    userModel.update({id: uid}, {avatar: base64}, {strict : true}, function(err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            cb(doc);
+        }
+    });
+}
 module.exports = User;

@@ -5,6 +5,17 @@ var app = null,
     userSecret = null,
     urlencodedParser = null,
     emitMessage = null;
+var multer  = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './assets/img/avatar')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.session.user + '.jpg')
+    }
+})
+var upload = multer({ storage: storage })
+
 function log(l){
     console.log('ROUTE: ', l);
 }
@@ -134,6 +145,31 @@ function bind(){
             }
         })
     })
+    app.post('/upload',upload.single('avatar'), function(req, res){
+        res.json({ message: 'Finished! Uploaded ' });
+    })
+    app.post('/uploadBase64',urlencodedParser, function(req, res){
+        // res.json({ message: 'Finished! Uploaded ' });
+        var uid = req.body.uid,
+            base64 = req.body.base64;
+        user.uploadAvatar(uid,base64,function(doc){
+            user.getById(uid,function(doc){
+                res.json(doc);
+            })
+        })
+    })
+    // app.post('/upload', function(req, res){
+    //     upload(req, res, function (err) {
+    //         if (err) {
+    //         // An error occurred when uploading
+    //         console.log(err);
+    //         }
+    //
+    //         // Everything went fine
+    //         res.json({ message: 'Finished! Uploaded ' });
+    //     })
+    //
+    // })
     app.get('/login', checkNotLogin);
     app.get('/login', function(req, res){
             res.render('login');
@@ -158,7 +194,7 @@ function bind(){
                 var userObj = {
                     id : req.body.username,
                     alias : req.body.username,
-                    avatar : 'default.jpg',
+                    avatar : '/img/avatar/default.jpg',
                     mail : ''
                 }
                 user.add(userObj,function(doc){

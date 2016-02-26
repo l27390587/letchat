@@ -8,7 +8,10 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({
+    extended: false,
+    limit: '5mb'
+})
 
 var MemoryStore = require('express-session/session/memory');
 var session_store = new MemoryStore();

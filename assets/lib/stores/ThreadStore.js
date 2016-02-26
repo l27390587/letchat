@@ -9,6 +9,7 @@ var ChatDispatcher = require('../dispatcher/ChatDispatcher');
 var ChatConstants = require('../constants/ChatConstants');
 
 var Modal = require('rctui/Modal');
+var Message = require('rctui/Message');
 
 var UserStore = require('./UserStore');
 
@@ -130,6 +131,7 @@ function msgReceive(msgObj){
     }
 }
 function infReceive(thread){
+    Message.show("有新的好友请求","success");
     var newThreads = {},
         nowTopThread = thread.id;
     newThreads[nowTopThread] = thread;

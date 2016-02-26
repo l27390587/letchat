@@ -55,7 +55,7 @@ function watchUser(userId){
             header: '',
             content: (
                 <div className = 'user-modal'>
-                    <img className="modal-img"  src={'/img/avatar/' + nowUser.avatar} />
+                    <img className="modal-img"  src={nowUser.avatar} />
                     <p className="modal-name">{nowUser.alias}</p>
                 </div>
             ),
@@ -94,7 +94,7 @@ function watchUser(userId){
             header: '',
             content: (
                 <div className = 'user-modal'>
-                    <img className="modal-img"  src={'/img/avatar/' + nowUser.avatar} />
+                    <img className="modal-img"  src={ nowUser.avatar} />
                     <p className="modal-name">{nowUser.alias}</p>
                 </div>
             ),
